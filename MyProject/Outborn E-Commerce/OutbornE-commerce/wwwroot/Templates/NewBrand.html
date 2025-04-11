@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Brand Launch</title>
+    <style>
+        /* Import Gotham Fonts */
+        @font-face {
+            font-family: 'Gotham';
+            src: url('fonts/Gotham-Bold.woff2') format('woff2'), url('fonts/Gotham-Bold.woff') format('woff');
+            font-weight: bold;
+        }
+
+        @font-face {
+            font-family: 'Gotham';
+            src: url('fonts/Gotham-Book.woff2') format('woff2'), url('fonts/Gotham-Book.woff') format('woff');
+            font-weight: normal;
+        }
+
+        @font-face {
+            font-family: 'Gotham';
+            src: url('fonts/Gotham-Light.woff2') format('woff2'), url('fonts/Gotham-Light.woff') format('woff');
+            font-weight: 300;
+        }
+
+        body {
+            font-family: 'Gotham', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            .header img {
+                max-width: 150px;
+            }
+
+        .content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            .content h1 {
+                font-size: 24px;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+
+        .brand-image img {
+            width: 100%;
+            max-width: 600px;
+            margin: 10px 0;
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: lowercase;
+        }
+
+        .content p {
+            font-size: 18px;
+            font-weight: 300;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .cta {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+            .cta a {
+                display: inline-block;
+                background-color: #000;
+                color: #fff;
+                text-decoration: none;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 12px 20px;
+                border-radius: 5px;
+            }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .product-item img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 300;
+            color: #888;
+            margin-top: 20px;
+        }
+
+            .footer a {
+                color: #000;
+                text-decoration: none;
+            }
+
+        .social-icons {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+            .social-icons img {
+                width: 24px;
+                margin: 0 5px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <img src="LOGO_LINK" alt="Outborn Logo">
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h1>Meet our newest brand!</h1>
+            <div class="brand-image">
+                <img src="MAIN_IMAGE_LINK" alt="Main Brand Image">
+            </div>
+            <p class="brand-name">misōu.</p>
+            <p>Discover Misou—brought to you from Egypt</p>
+        </div>
+
+        <!-- Call-to-Action -->
+        <div class="cta">
+            <a href="{{Link}}">SHOP NOW</a>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid">
+            <div class="product-item">
+                <img src="PRODUCT_1_LINK" alt="Product 1">
+            </div>
+            <div class="product-item">
+                <img src="PRODUCT_2_LINK" alt="Product 2">
+            </div>
+            <div class="product-item">
+                <img src="PRODUCT_3_LINK" alt="Product 3">
+            </div>
+            <div class="product-item">
+                <img src="PRODUCT_4_LINK" alt="Product 4">
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>If you have any questions, reply to this email or contact us at <a href="mailto:hello@outborngeneration.com">hello@outborngeneration.com</a></p>
+            <div class="social-icons">
+                <a href="#"><img src="FACEBOOK_ICON_LINK" alt="Facebook"></a>
+                <a href="#"><img src="INSTAGRAM_ICON_LINK" alt="Instagram"></a>
+                <a href="#"><img src="TIKTOK_ICON_LINK" alt="TikTok"></a>
+            </div>
+            <a href="#">Unsubscribe Here</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,804 @@
+﻿.email-order-placed {
+    margin: auto;
+    background-color: rgba(255, 255, 255, 1);
+    display: flex;
+    max-width: 595px;
+    flex-direction: column;
+    overflow: hidden;
+    align-items: center;
+    padding: 20px 16px 60px;
+}
+
+.div {
+    align-self: stretch;
+    display: flex;
+    gap: 20px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 1);
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+@media (max-width: 991px) {
+    .div {
+        max-width: 100%;
+    }
+}
+
+.div-2 {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.weve-got-your-outborn-order-0000001 {
+    font: 400 12px Outfit, sans-serif;
+}
+
+.outborn-generation-hello-outborngeneration-com {
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    align-self: stretch;
+    margin-top: 16px;
+}
+
+.to-deema-george-30-gmail-com {
+    font-family: Gotham, sans-serif;
+    font-weight: 325;
+}
+
+.wed-aug-23-2023-at-2-01-am {
+    font-family: Gotham, sans-serif;
+    font-weight: 325;
+    text-align: right;
+    margin: auto 0;
+}
+
+.img {
+    aspect-ratio: 3.53;
+    object-fit: contain;
+    object-position: center;
+    width: 180px;
+    margin-top: 51px;
+    max-width: 100%;
+}
+
+@media (max-width: 991px) {
+    .img {
+        margin-top: 40px;
+    }
+}
+
+.weve-got-your-order {
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    margin-top: 30px;
+    font: 400 28px Gotham, sans-serif;
+}
+
+.great-picks-thank-you-for-your-conscious-upgrade-here-are-your-order-details-well-let-you-know-as-soon-as-it-ships {
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    margin-top: 30px;
+    font: 325 15px Gotham, sans-serif;
+}
+
+.nb-search {
+    background-color: rgba(0, 0, 0, 1);
+    display: flex;
+    margin-top: 30px;
+    width: 350px;
+    max-width: 100%;
+    flex-direction: column;
+    color: rgba(255, 255, 255, 1);
+    text-align: center;
+    letter-spacing: 1.6px;
+    padding: 13px 29px 6px;
+    font: 350 16px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .nb-search {
+        padding-right: 20px;
+    }
+}
+
+.view-your-order {
+    align-self: center;
+    cursor: pointer;
+}
+
+.div-3 {
+    margin-top: 7px;
+    height: 1px;
+    border: 1px solid rgba(0, 0, 0, 1);
+}
+
+.order-summary {
+    color: rgba(0, 0, 0, 1);
+    align-self: start;
+    margin: 30px 0 0 107px;
+    font: 325 20px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .order-summary {
+        margin-left: 10px;
+    }
+}
+
+.order-number-1550660 {
+    color: rgba(115, 115, 115, 1);
+    align-self: start;
+    margin: 15px 0 0 107px;
+    font: 325 12px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .order-number-1550660 {
+        margin-left: 10px;
+    }
+}
+
+.div-4 {
+    margin-top: 19px;
+    width: 350px;
+    max-width: 100%;
+    height: 1px;
+    border: 1px solid rgba(212, 212, 212, 1);
+}
+
+.div-5 {
+    display: flex;
+    margin-top: 20px;
+    width: 351px;
+    max-width: 100%;
+    gap: 20px;
+    font-family: Gotham, sans-serif;
+    color: rgba(0, 0, 0, 1);
+    font-weight: 325;
+    justify-content: space-between;
+}
+
+.div-6 {
+    display: flex;
+    gap: 12px;
+}
+
+.img-2 {
+    aspect-ratio: 0.66;
+    object-fit: contain;
+    object-position: center;
+    width: 53px;
+}
+
+.div-7 {
+    align-self: start;
+    display: flex;
+    margin-top: 5px;
+    flex-direction: column;
+}
+
+.leather-top-martha {
+    font-size: 14px;
+}
+
+.black-1 {
+    font-size: 12px;
+    align-self: start;
+    margin-top: 11px;
+}
+
+.aed-248-00 {
+    font-size: 12px;
+    text-align: right;
+    align-self: start;
+}
+
+.div-8 {
+    margin-top: 19px;
+    width: 350px;
+    max-width: 100%;
+    height: 1px;
+    border: 1px solid rgba(212, 212, 212, 1);
+}
+
+.div-9 {
+    display: flex;
+    margin-top: 20px;
+    width: 351px;
+    max-width: 100%;
+    gap: 20px;
+    font-family: Gotham, sans-serif;
+    color: rgba(0, 0, 0, 1);
+    font-weight: 325;
+    justify-content: space-between;
+}
+
+.div-10 {
+    display: flex;
+    gap: 12px;
+}
+
+.img-3 {
+    aspect-ratio: 0.66;
+    object-fit: contain;
+    object-position: center;
+    width: 53px;
+}
+
+.div-11 {
+    align-self: start;
+    display: flex;
+    margin-top: 5px;
+    flex-direction: column;
+}
+
+.jackie-jacket {
+    font-size: 14px;
+}
+
+.multicolor-1 {
+    font-size: 12px;
+    align-self: start;
+    margin-top: 10px;
+}
+
+.div-12 {
+    margin-top: 19px;
+    width: 350px;
+    max-width: 100%;
+    height: 1px;
+    border: 1px solid rgba(212, 212, 212, 1);
+}
+
+.div-13 {
+    display: flex;
+    margin-top: 20px;
+    width: 351px;
+    max-width: 100%;
+    gap: 20px;
+    font-family: Gotham, sans-serif;
+    color: rgba(0, 0, 0, 1);
+    font-weight: 325;
+    justify-content: space-between;
+}
+
+.div-14 {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+@media (max-width: 991px) {
+    .div-14 {
+        white-space: initial;
+    }
+}
+
+@media (max-width: 991px) {
+    .subtotal {
+        margin-right: 2px;
+    }
+}
+
+.shipping {
+    margin-top: 11px;
+}
+
+.tax {
+    align-self: start;
+    margin-top: 11px;
+}
+
+.total {
+    font-size: 14px;
+    align-self: start;
+    margin-top: 17px;
+}
+
+.div-15 {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.div-16 {
+    display: flex;
+    padding-left: 6px;
+    flex-direction: column;
+    align-items: start;
+    font-size: 12px;
+}
+
+.aed-248-00-2 {
+    align-self: stretch;
+}
+
+.aed-0-00 {
+    margin: 11px 0 0 15px;
+}
+
+@media (max-width: 991px) {
+    .aed-0-00 {
+        margin-left: 10px;
+    }
+}
+
+.aed-22-01 {
+    margin: 11px 0 0 13px;
+}
+
+@media (max-width: 991px) {
+    .aed-22-01 {
+        margin-left: 10px;
+    }
+}
+
+.aed-270-01 {
+    font-size: 14px;
+    margin-top: 16px;
+}
+
+.div-17 {
+    margin-top: 19px;
+    width: 350px;
+    max-width: 100%;
+    height: 1px;
+    border: 1px solid rgba(212, 212, 212, 1);
+}
+
+.customer-information {
+    color: rgba(0, 0, 0, 1);
+    align-self: start;
+    margin: 30px 0 0 106px;
+    font: 325 16px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .customer-information {
+        margin-left: 10px;
+    }
+}
+
+.div-18 {
+    display: flex;
+    margin-top: 20px;
+    width: 350px;
+    max-width: 100%;
+    gap: 20px;
+    color: rgba(0, 0, 0, 1);
+    justify-content: space-between;
+    font: 325 12px Gotham, sans-serif;
+}
+
+.div-19 {
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 991px) {
+    .shipping-address {
+        margin-right: 6px;
+    }
+}
+
+.deema-abdo {
+    align-self: start;
+    margin-top: 11px;
+}
+
+.mickle-avenue {
+    color: rgba(17, 85, 204, 1);
+    margin-top: 12px;
+}
+
+@media (max-width: 991px) {
+    .mickle-avenue {
+        margin-right: 5px;
+    }
+}
+
+.the-bronx-ny-10469 {
+    color: rgba(17, 85, 204, 1);
+    margin-top: 11px;
+}
+
+.united-states {
+    color: rgba(17, 85, 204, 1);
+    align-self: start;
+    margin-top: 11px;
+}
+
+.shipping-method {
+    margin-top: 20px;
+}
+
+@media (max-width: 991px) {
+    .shipping-method {
+        margin-right: 3px;
+    }
+}
+
+.free-standard-3-7-business-days {
+    margin-top: 11px;
+}
+
+.div-20 {
+    display: flex;
+    flex-direction: column;
+}
+
+.div-21 {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    color: rgba(17, 85, 204, 1);
+    padding: 0 18px 0 7px;
+}
+
+.billing-address {
+    color: rgba(0, 0, 0, 1);
+}
+
+.deema-abdo-2 {
+    color: rgba(0, 0, 0, 1);
+    margin-top: 11px;
+}
+
+.mickle-avenue-2 {
+    margin-top: 12px;
+}
+
+.the-bronx-ny-10469-2 {
+    align-self: stretch;
+    margin-top: 11px;
+}
+
+.united-states-2 {
+    margin-top: 11px;
+}
+
+.payment-method {
+    align-self: start;
+    margin-top: 20px;
+}
+
+.div-22 {
+    display: flex;
+    margin-top: 11px;
+    gap: 2px;
+}
+
+.img-4 {
+    aspect-ratio: 1.53;
+    object-fit: contain;
+    object-position: center;
+    width: 29px;
+}
+
+.payment-method-2 {
+    flex-grow: 1;
+    width: 115px;
+    margin: auto 0;
+}
+
+/* .270-01 {
+          align-self: start;
+          margin-top: 10px;
+        } */
+.if-you-have-any-questions-reply-to-this-email-or-contact-us-at-hello-outborngeneration-com {
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    margin-top: 50px;
+    width: 350px;
+    font: 500 10px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .if-you-have-any-questions-reply-to-this-email-or-contact-us-at-hello-outborngeneration-com {
+        margin-top: 40px;
+    }
+}
+
+.img-5 {
+    aspect-ratio: 4.81;
+    object-fit: contain;
+    object-position: center;
+    width: 77px;
+    margin-top: 20px;
+}
+
+.vector {
+    background-color: rgba(204, 204, 204, 1);
+    display: flex;
+    margin-top: 20px;
+    width: 480px;
+    max-width: 100%;
+    height: 1px;
+}
+
+.from-the-arab-world-with-conscious {
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    margin-top: 20px;
+    font: 350 12px Gotham, sans-serif;
+    font-weight: bold;
+}
+
+.div-23 {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 480px;
+}
+
+@media (max-width: 991px) {
+    .div-23 {
+        max-width: 100%;
+    }
+}
+
+.div-24 {
+    gap: 20px;
+    display: flex;
+}
+
+@media (max-width: 991px) {
+    .div-24 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0px;
+    }
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    line-height: normal;
+    width: 50%;
+    margin-left: 0px;
+}
+
+@media (max-width: 991px) {
+    .column {
+        width: 100%;
+    }
+}
+
+.div-25 {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    aspect-ratio: 0.816;
+    flex-grow: 1;
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    padding: 247px 27px 12px;
+    font: 500 14px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .div-25 {
+        margin-top: 10px;
+        padding: 100px 20px 0;
+    }
+}
+
+.img-6 {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    padding-left: 20px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.eng-brand-name {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 31px;
+    margin: auto;
+    font-weight: bold;
+}
+
+/* @media (max-width: 991px) {
+          .eng-brand-name {
+            padding: 0 20px;
+          }
+        } */
+.column-2 {
+    display: flex;
+    flex-direction: column;
+    line-height: normal;
+    width: 50%;
+    margin-left: 20px;
+}
+
+@media (max-width: 991px) {
+    .column-2 {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+.div-26 {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    aspect-ratio: 0.816;
+    flex-grow: 1;
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    padding: 248px 28px 12px;
+    font: 500 14px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .div-26 {
+        margin-top: 10px;
+        padding: 100px 20px 0;
+    }
+}
+
+.img-7 {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 95%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.eng-brand-name-2 {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 31px;
+    margin: auto;
+    font-weight: bold;
+}
+
+/* @media (max-width: 991px) {
+          .eng-brand-name-2 {
+            padding: 0 20px;
+          }
+        } */
+.div-27 {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 480px;
+}
+
+@media (max-width: 991px) {
+    .div-27 {
+        max-width: 100%;
+    }
+}
+
+.div-28 {
+    gap: 20px;
+    display: flex;
+}
+
+@media (max-width: 991px) {
+    .div-28 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0px;
+    }
+}
+
+.div-29 {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    aspect-ratio: 0.816;
+    flex-grow: 1;
+    color: rgba(0, 0, 0, 1);
+    padding: 246px 27px 13px;
+    font: 500 14px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .div-29 {
+        margin-top: 10px;
+        padding: 100px 20px 0;
+    }
+}
+
+.img-8 {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    padding-left: 20px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.eng-brand-name-3 {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 31px;
+    margin: auto;
+    font-weight: bold;
+}
+
+.column-3 {
+    display: flex;
+    flex-direction: column;
+    line-height: normal;
+    width: 50%;
+    margin-left: 20px;
+}
+
+@media (max-width: 991px) {
+    .column-3 {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+.div-30 {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    aspect-ratio: 0.816;
+    flex-grow: 1;
+    color: rgba(0, 0, 0, 1);
+    text-align: center;
+    padding: 246px 28px 14px;
+    font: 500 14px Gotham, sans-serif;
+}
+
+@media (max-width: 991px) {
+    .div-30 {
+        margin-top: 10px;
+        padding: 100px 20px 0;
+    }
+}
+
+.img-9 {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 95%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.eng-brand-name-4 {
+    position: relative;
+    background-color: #fff;
+    padding: 10px 31px;
+    margin: auto;
+    font-weight: bold;
+}
+
+.img-6,
+.img-7,
+.img-8,
+.img-9 {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    /* Ensure all images fill their containers */
+    object-fit: cover;
+    /* Maintain aspect ratio while covering the container */
+    object-position: center;
+    /* Center the image content */
+    padding-left: 0;
+    /* Remove padding if unnecessary */
+}
+
+.div-25,
+.div-26,
+.div-29,
+.div-30 {
+    aspect-ratio: 1 / 1;
+    /* Square ratio for example */
+}
+

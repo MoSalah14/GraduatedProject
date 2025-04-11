@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Placed</title>
+    <style>
+        /* Import Gotham Fonts */
+        @font-face {
+            font-family: 'Gotham';
+            src: url('fonts/Gotham-Bold.woff2') format('woff2'), url('fonts/Gotham-Bold.woff') format('woff');
+            font-weight: bold;
+        }
+
+        @font-face {
+            font-family: 'Gotham';
+            src: url('fonts/Gotham-Book.woff2') format('woff2'), url('fonts/Gotham-Book.woff') format('woff');
+            font-weight: normal;
+        }
+
+        @font-face {
+            font-family: 'Gotham';
+            src: url('fonts/Gotham-Light.woff2') format('woff2'), url('fonts/Gotham-Light.woff') format('woff');
+            font-weight: 300;
+        }
+
+        body {
+            font-family: 'Gotham', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            .header img {
+                max-width: 150px;
+            }
+
+        .content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            .content h1 {
+                font-size: 24px;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+
+            .content p {
+                font-size: 16px;
+                font-weight: 300;
+                margin: 5px 0;
+                color: #555;
+            }
+
+        .cta {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+            .cta a {
+                display: inline-block;
+                background-color: #000;
+                color: #fff;
+                text-decoration: none;
+                font-size: 16px;
+                font-weight: bold;
+                padding: 12px 20px;
+                border-radius: 5px;
+            }
+
+        .summary {
+            margin-top: 20px;
+        }
+
+            .summary h2 {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+            .summary-item img {
+                width: 80px;
+                height: 80px;
+                border-radius: 5px;
+            }
+
+        .summary-item-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+            .summary-item-info h3 {
+                font-size: 16px;
+                margin: 0;
+                font-weight: bold;
+            }
+
+            .summary-item-info p {
+                margin: 5px 0;
+                color: #555;
+            }
+
+        .summary-item-price {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .totals {
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+            .totals div {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .totals .total {
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+        .customer-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+            .customer-info div {
+                width: 48%;
+            }
+
+            .customer-info h3 {
+                font-size: 16px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 300;
+            color: #888;
+            margin-top: 20px;
+            padding-top: 10px;
+        }
+
+        .social-icons {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+            .social-icons img {
+                width: 24px;
+                margin: 0 5px;
+            }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .grid-item {
+            text-align: center;
+        }
+
+            .grid-item img {
+                width: 100%;
+                max-width: 100px;
+                border-radius: 5px;
+                margin-bottom: 5px;
+            }
+
+            .grid-item a {
+                display: inline-block;
+                background-color: #000;
+                color: #fff;
+                padding: 5px 10px;
+                font-size: 12px;
+                font-weight: bold;
+                text-decoration: none;
+                border-radius: 3px;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo Section -->
+        <div class="header">
+            <img src="LOGO_LINK" alt="Company Logo">
+        </div>
+
+        <!-- Content Section -->
+        <div class="content">
+            <h1>We’ve got your order!</h1>
+            <p>Great picks—thank you for your conscious upgrade!</p>
+            <p>Here are your order details.<br>We’ll let you know as soon as it ships!</p>
+        </div>
+
+        <!-- Call-to-Action -->
+        <div class="cta">
+            <a href="VIEW_ORDER_LINK">VIEW YOUR ORDER</a>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary">
+            <h2>Order Summary</h2>
+            <p style="text-align: center; color: #888;">Order number {{OrderNumber}}</p>
+
+           
+            <div *ngFor="let item of OrderItems" class="summary-item">
+                <img [src]="item.ImageUrl" [alt]="item.ProductNameAr">
+                <div class="summary-item-info">
+                    <h3>{{ item.ProductNameAr }}</h3>
+                    <p>{{ item.ColorNameAr }} × {{ item.Quantity }}</p>
+                </div>
+                <div class="summary-item-price">AED {{ item.ItemPrice }}</div>
+            </div>
+
+
+            <!-- Totals -->
+            <div class="totals">
+                <div>
+                    <span>Subtotal</span>
+                    <span>AED 248.00</span>
+                </div>
+                <div>
+                    <span>Shipping</span>
+                    <span>AED {{ShippingPrice}}</span>
+                </div>
+                <div>
+                    <span>Tax</span>
+                    <span>AED 22.01</span>
+                </div>
+                <div class="total">
+                    <span>Total</span>
+                    <span>AED {{TotalAmount}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="customer-info">
+            <div>
+                <h3>SHIPPING ADDRESS</h3>
+                <p>{{FullName}}</p>
+                <p>{{Address.Street}} {{Address.BuildingNumber}}<br>{{Address.AddressLine}}<br>{{Address.LandMark}}</p>
+                <h3>SHIPPING METHOD</h3>
+                <p>FREE Standard<br>(3-7 business days)</p>
+            </div>
+            <div>
+                <h3>BILLING ADDRESS</h3>
+                <p>{{FullName}}</p>
+                <p>2233 Mickle Avenue<br>The Bronx NY 10469<br>United States</p>
+                <h3>PAYMENT METHOD</h3>
+                <p><img src="PAYMENT_ICON_LINK" alt="Payment Icon"> Payment method — $270.01</p>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>If you have any questions, reply to this email or contact us at <a href="mailto:hello@outborngeneration.com">hello@outborngeneration.com</a></p>
+            <div class="social-icons">
+                <a href="#"><img src="FACEBOOK_ICON_LINK" alt="Facebook"></a>
+                <a href="#"><img src="INSTAGRAM_ICON_LINK" alt="Instagram"></a>
+                <a href="#"><img src="TIKTOK_ICON_LINK" alt="TikTok"></a>
+            </div>
+            <p>FROM THE ARAB WORLD, WITH CONSCIOUS</p>
+            <div class="image-grid">
+                <div class="grid-item">
+                    <img src="WOMENS_IMAGE_LINK" alt="Shop Women's">
+                    <a href="#">SHOP WOMEN'S</a>
+                </div>
+                <div class="grid-item">
+                    <img src="MENS_IMAGE_LINK" alt="Shop Men's">
+                    <a href="#">SHOP MEN'S</a>
+                </div>
+                <div class="grid-item">
+                    <img src="ACCESSORIES_IMAGE_LINK" alt="Shop Accessories">
+                    <a href="#">SHOP ACCESSORIES</a>
+                </div>
+                <div class="grid-item">
+                    <img src="HOME_GOODS_IMAGE_LINK" alt="Shop Home Goods">
+                    <a href="#">SHOP HOME GOODS</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
