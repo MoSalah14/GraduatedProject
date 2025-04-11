@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>OutbornE_commerce.BAL</RootNamespace>
+    <RootNamespace>SweetyCake.BAL</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -34,6 +34,6 @@
     <PackageReference Include="Stripe.net" Version="47.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OutbornE-commerce.DAL\SweetyCake.DAL.csproj" />
+    <ProjectReference Include="..\SweetyCake.DAL\SweetyCake.DAL.csproj" />
   </ItemGroup>
 </Project>

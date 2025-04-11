@@ -3,8 +3,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-OutbornE_commerce-4fa95984-be07-4389-b20f-0cca930df26e</UserSecretsId>
-    <RootNamespace>OutbornE_commerce</RootNamespace>
+    <UserSecretsId>aspnet-SweetyCake-4fa95984-be07-4389-b20f-0cca930df26e</UserSecretsId>
+    <RootNamespace>SweetyCake</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -35,8 +35,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OutbornE-commerce.BAL\SweetyCake.BAL.csproj" />
-    <ProjectReference Include="..\OutbornE-commerce.DAL\SweetyCake.DAL.csproj" />
+    <ProjectReference Include="..\SweetyCake.BAL\SweetyCake.BAL.csproj" />
+    <ProjectReference Include="..\SweetyCake.DAL\SweetyCake.DAL.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\Uploads\" />
