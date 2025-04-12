@@ -330,11 +330,6 @@ namespace OutbornE_commerce.DAL.Data
            .HasKey(up => new { up.UserId, up.PermissionId });
 
             builder.Entity<UserPermission>()
-                .HasOne(up => up.User)
-                .WithMany(u => u.UserPermissions)
-                .HasForeignKey(up => up.UserId);
-
-            builder.Entity<UserPermission>()
             .HasOne(up => up.Permission)
             .WithMany()
             .HasForeignKey(up => up.PermissionId);

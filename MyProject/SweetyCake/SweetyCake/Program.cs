@@ -14,10 +14,6 @@ using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Extentions;
 using OutbornE_commerce.BAL.External_Logins;
-using OutbornE_commerce.BAL.Repositories.BaseRepositories;
-using OutbornE_commerce.BAL.Repositories.Brands;
-using OutbornE_commerce.BAL.Repositories.Categories;
-using OutbornE_commerce.BAL.Repositories.PermissionRepo;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
@@ -55,7 +51,6 @@ builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IpermissionRepository, PermissionRepository>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(co =>
 {

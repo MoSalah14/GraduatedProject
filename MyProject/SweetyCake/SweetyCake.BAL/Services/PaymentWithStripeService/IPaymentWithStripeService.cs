@@ -15,6 +15,5 @@ namespace Infrastructure.Services.PaymentWithStripeService
 
         Task<ConfirmOrderRequstDto> HandlePaymentStatusAsync(string sessionId, bool PaymentStatus, CancellationToken cancellationToken);
 
-        Task<SessisonResponse> CreateWalletSession(string userId, long topUpAmount);
     }
 }

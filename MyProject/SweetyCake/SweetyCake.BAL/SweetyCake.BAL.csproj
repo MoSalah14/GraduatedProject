@@ -36,4 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SweetyCake.DAL\SweetyCake.DAL.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repositories\PermissionRepo\" />
+  </ItemGroup>
 </Project>

@@ -106,7 +106,6 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IPaymentWithStripeService, PaymentWithStripeService>();
             services.AddScoped<IDiscountRepository, DiscountRepository>();
-            services.AddScoped<IUserPermissionRepo, UserPermissionRepo>();
             services.AddScoped<IproductSizeDiscountRepository, productSizeDiscountRepository>();
             services.AddScoped<ISubcategoryTypeRepository, SubCategoryTypeRepository>();
             services.AddScoped<ICategorySubCategoryBridgeRepository, CategorySubCategoryBridgeRepository>();

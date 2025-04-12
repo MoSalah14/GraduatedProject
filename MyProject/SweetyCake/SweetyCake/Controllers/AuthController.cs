@@ -76,27 +76,12 @@ namespace OutbornE_commerce.Controllers
                 });
             }
 
-            //var checkByUserName = await _userManager.FindByNameAsync(userForRegistration.UserName);
-            //if (checkByUserName != null)
-            //{
-            //    return Ok(new AuthResponseModel
-            //    {
-            //        MessageEn = "User Name  already Exist",
-            //        MessageAr = "اسم المستخدم موجود من قبل",
-            //        IsError = true,
-            //        Email = userForRegistration.Email,
-            //    });
-            //}
-
             var user = userForRegistration.Adapt<User>();
-
-            var currency = await _currencyRepository.Find(c => c.IsDeafult);
-            if (currency != null)
-                user.CurrencyId = currency.Id;
-
+            user.UserName = userForRegistration.Email;
+            user.FullName = $"{userForRegistration.FirstName} {userForRegistration.LastName}";
             try
             {
-                await _currencyRepository.BeginTransactionAsync();
+
                 var result = await _userManager.CreateAsync(user, userForRegistration.Password!);
                 if (!result.Succeeded)
                 {
@@ -109,34 +94,11 @@ namespace OutbornE_commerce.Controllers
                     });
                 }
 
-                //string Role = Enum.GetName(typeof(AccountTypeEnum), userForRegistration.AccountType)!;
-
-                //await _userManager.AddToRoleAsync(user, Role);
-                await _currencyRepository.CommitTransactionAsync();
-
                 var GeneratedToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var confirmationLink = Url.Action("ConfirmEmail", "Auth", new { userId = user.Id, GeneratedToken }, Request.Scheme);
 
-                var templatePath = Path.Combine(webHostEnvironment.WebRootPath, "Templates", "ConfirmEmail.html");
-
-                if (!System.IO.File.Exists(templatePath))
-                {
-                    return NotFound("Email template not found.");
-                }
-
-                var emailContent = System.IO.File.ReadAllText(templatePath);
-
-                //// Load CSS
-                var cssPath = Path.Combine(webHostEnvironment.WebRootPath, "Css", "style.css");
-                if (!System.IO.File.Exists(cssPath))
-                {
-                    return NotFound("CSS style file not found.");
-                }
-
-                emailContent = emailContent.Replace("{{Link}}", confirmationLink);
-
-                await emailSender.SendEmailAsync(user.Email, "Confirm Email", emailContent);
+                await emailSender.SendEmailAsync(user.Email, "Confirm Email", confirmationLink);
 
                 return Ok(new AuthResponseModel
                 {
@@ -145,7 +107,6 @@ namespace OutbornE_commerce.Controllers
                     IsError = false,
                     Email = userForRegistration.Email,
                     Id = user.Id,
-                    //AccountType = userForRegistration.AccountType,
                 });
             }
             catch (Exception ex)
@@ -194,17 +155,7 @@ namespace OutbornE_commerce.Controllers
             if (result.Succeeded)
             {
 
-                var templatePath = Path.Combine(webHostEnvironment.WebRootPath, "Templates", "WelcomeOutborn’sCommunity.html");
-
-                if (!System.IO.File.Exists(templatePath))
-                {
-                    return NotFound("Email template not found.");
-                }
-
-                var emailContent = System.IO.File.ReadAllText(templatePath);
-
-
-                await emailSender.SendEmailAsync(user.Email, "Welcome to Outborn’s Community", emailContent);
+                await emailSender.SendEmailAsync(user.Email, "Welcome", "Welcome to Sweety’s Community");
 
                 return Ok("Email confirmed successfully.");
 

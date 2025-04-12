@@ -24,30 +24,7 @@ namespace OutbornE_commerce.Controllers
             this.walletService = walletService;
         }
 
-        [Authorize]
-        [HttpPost("charge")]
-        public async Task<IActionResult> ChargeWallet(decimal ChargeAmount, CancellationToken cancellationToken)
-        {
-            if (ChargeAmount <= 0)
-                return BadRequest("Amount must be greater than zero.");
-
-            var userId = User.GetUserIdFromToken();
-            if (userId == null)
-                return NotFound("User not found.");
-
-            try
-            {
-                await walletService.CheckIfUserHaveWallet(userId, cancellationToken);
-
-                var CreateSession = await paymentWithStripe.CreateWalletSession(userId, (long)ChargeAmount);
-
-                return Ok(CreateSession);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
+        
 
         [Authorize, HttpGet("GetUserWallet")]
         public async Task<IActionResult> GetUserWallet(CancellationToken cancellationToken)

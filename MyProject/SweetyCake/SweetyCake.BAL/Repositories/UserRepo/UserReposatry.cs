@@ -121,7 +121,7 @@ namespace OutbornE_commerce.BAL.Repositories.UserRepo
 
             if (User is null)
                 return false;
-            User.CurrencyId = CurrencyID;
+
             try
             {
                 await SaveAsync(cancellationToken);

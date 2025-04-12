@@ -5,9 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OutbornE_commerce.BAL.Dto;
-
-using OutbornE_commerce.BAL.Repositories.PermissionRepo;
-
 using OutbornE_commerce.BAL.Dto.Eternal_Logins;
 using OutbornE_commerce.BAL.External_Logins;
 
@@ -31,7 +28,6 @@ namespace OutbornE_commerce.BAL.AuthServices
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly IpermissionRepository _permissionRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ExternalLoginAuth externalLogins;
         private readonly HttpClient httpClient;
@@ -41,11 +37,10 @@ namespace OutbornE_commerce.BAL.AuthServices
         private readonly string BaseUrl;
 
         public AuthService(UserManager<User> userManager, IConfiguration configuration,
-            IHttpClientFactory httpClientFactory, IpermissionRepository permissionRepository,
+            IHttpClientFactory httpClientFactory,
             IHttpContextAccessor httpContextAccessor
             , IOptions<ExternalLoginAuth> ExternalLogins)
         {
-            _permissionRepository = permissionRepository;
             _httpContextAccessor = httpContextAccessor;
             externalLogins = ExternalLogins.Value;
             _userManager = userManager;
@@ -127,11 +122,6 @@ namespace OutbornE_commerce.BAL.AuthServices
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-            var Permissions = await _permissionRepository.GetPermissionsUser(_user.Id);
-            foreach (var permission in Permissions)
-            {
-                claims.Add(new Claim("permissions", permission.Permission.ToString()));
             }
 
             return claims;

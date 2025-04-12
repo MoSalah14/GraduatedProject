@@ -58,33 +58,17 @@ namespace Infrastructure.Services.PaymentWithStripeService
         {
             StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
-            var userWithCurrency = await GetUserWithCurrencyAsync(UserId);
-
-            if (userWithCurrency == null)
-            {
-                throw new Exception("User not found");
-            }
+            var userWithCurrency = await _userManager.FindByIdAsync(UserId);
 
             var customerOptions = new CustomerCreateOptions
             {
-                Name = userWithCurrency.FullName,
+                Name = userWithCurrency!.FullName,
                 Email = userWithCurrency.Email,
             };
             var customerService = new CustomerService();
             var customer = await customerService.CreateAsync(customerOptions);
 
             var customerId = customer.Id;
-            string currency = userWithCurrency!.Currency!.NameEn ?? "aed";
-
-            // If the currency is not USD, convert the prices using the exchange rate
-            if (currency.ToLower() != "usd")
-            {
-                productPrice = ConvertToTargetCurrency(productPrice, userWithCurrency.Currency.Price);
-            }
-
-            var Aedvalue = await currencyRepository.GetAEDValue();
-            var TargetValue = await currencyRepository.GetTargetValue(userWithCurrency.Currency.Sign);
-            var deliveryPrices = ConvertFromAedToTargetCurrency(deliveryPrice, Aedvalue, TargetValue);
 
             var options = new SessionCreateOptions
             {
@@ -96,7 +80,7 @@ namespace Infrastructure.Services.PaymentWithStripeService
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    Currency = currency,
+                    Currency = "EGP",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
                         Name = description,
@@ -109,12 +93,12 @@ namespace Infrastructure.Services.PaymentWithStripeService
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    Currency = currency,
+                    Currency = "EGP",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
                         Name = "Delivery Charge",
                     },
-                    UnitAmount = (long)deliveryPrices * 100,
+                    UnitAmount = productPrice * 100,
                 },
                 Quantity = 1,
             },
@@ -134,19 +118,6 @@ namespace Infrastructure.Services.PaymentWithStripeService
                 SessionId = session.Id,
                 SessionUrl = session.Url
             };
-        }
-
-        private async Task<User> GetUserWithCurrencyAsync(string userId)
-        {
-            var user = await _context.Users.Include(x => x.Currency)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (user == null)
-            {
-                throw new Exception("User not found.");
-            }
-
-            return user;
         }
 
         public async Task<Session> GetCheckoutSession(string sessionId)
@@ -293,86 +264,7 @@ namespace Infrastructure.Services.PaymentWithStripeService
                 return null;
             }
         }
-
-        public async Task<SessisonResponse> CreateWalletSession(string userId, long topUpAmount)
-        {
-            StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
-
-            // Get user and customer info
-            var userWithCurrency = await GetUserWithCurrencyAsync(userId);
-            if (userWithCurrency == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            //var currency = userWithCurrency.Currency.NameEn ?? "usd";
-            var currency = "usd";
-            var customerService = new CustomerService();
-
-            var customerOptions = new CustomerCreateOptions
-            {
-                Name = userWithCurrency.FullName,
-                Email = userWithCurrency.Email,
-            };
-            var customer = await customerService.CreateAsync(customerOptions);
-            var customerId = customer.Id;
-
-            var options = new SessionCreateOptions
-            {
-                Customer = customerId,
-                PaymentMethodTypes = new List<string> { "card" },
-                LineItems = new List<SessionLineItemOptions>
-        {
-            new SessionLineItemOptions
-            {
-                PriceData = new SessionLineItemPriceDataOptions
-                {
-                    Currency = currency,
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = "Wallet Top-Up",
-                    },
-                    UnitAmount = topUpAmount * 100,
-                },
-                Quantity = 1,
-            }
-        },
-                Mode = "payment",
-                SuccessUrl = (env.IsDevelopment() ? $"{FrontBaseUrl.Local}" : $"{FrontBaseUrl.Production}") + "user/order-submition",
-                CancelUrl = env.IsDevelopment() ? $"{FrontBaseUrl.Local}" : $"{FrontBaseUrl.Production}",
-                Metadata = new Dictionary<string, string>
-                {
-                  { "UserId", userId },
-                  { "paymentType", "wallet" }
-                }
-            };
-
-            var service = new SessionService();
-            var session = await service.CreateAsync(options);
-
-            return new SessisonResponse
-            {
-                SessionId = session.Id,
-                SessionUrl = session.Url,
-            };
-        }
-
-        //private async Task HandleWalletRechargeAsync(string sessionId, CancellationToken cancellationToken)
-        //{
-        //    var session = await paymentWithStripeService.GetSessionByIdAsync(sessionId);
-
-        //    if (session != null)
-        //    {
-        //        var userId = User.GetUserIdFromToken();
-        //        var wallet = await walletService.GetWalletByUserIdAsync(userId);
-
-        //        // Assuming you have a Wallet model with Recharge method
-        //        await walletService.RechargeWalletAsync(wallet, session.AmountTotal / 100, cancellationToken);
-
-        //        // Record wallet transaction
-        //        await walletService.RecordWalletTransactionAsync(wallet, session.AmountTotal / 100, "Recharge", cancellationToken);
-        //    }
-        //}
+        
 
         // Method to convert the price using the fetched exchange rate
         public long ConvertToTargetCurrency(long priceInUsdCents, decimal exchangeRate)
