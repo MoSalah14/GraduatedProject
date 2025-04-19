@@ -1,4 +1,4 @@
-﻿using OutbornE_commerce.BAL.Dto.Brands;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,5 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public decimal? Price { get; set; }
         public int Label {  get; set; }
         public Guid BrandId { get; set; }
-        public BrandDto? Brand { get; set; }
     }
 }

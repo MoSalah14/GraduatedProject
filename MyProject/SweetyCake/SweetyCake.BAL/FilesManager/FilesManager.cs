@@ -32,7 +32,7 @@ namespace OutbornE_commerce.FilesManager
 
                 var fileExtension = Path.GetExtension(file.FileName)?.ToLower();
 
-                var allowedExtensions = new[] { ".jpg" };
+                var allowedExtensions = new[] { ".jpg",".png","jpeg" };
 
                 if (!allowedExtensions.Contains(fileExtension))
                 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.BAL.Dto;
-using OutbornE_commerce.BAL.Dto.Colors;
 using OutbornE_commerce.BAL.Dto.Products;
 using OutbornE_commerce.BAL.Dto.ProductSizes;
 using OutbornE_commerce.BAL.Dto.Sizes;

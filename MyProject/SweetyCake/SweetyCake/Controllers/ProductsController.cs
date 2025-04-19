@@ -4,6 +4,7 @@ using OutbornE_commerce.FilesManager;
 using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.BAL.Repositories.ProductImageRepo;
 using OutbornE_commerce.BAL.Extentions;
+using OutbornE_commerce.DAL.Models;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -15,9 +16,7 @@ namespace OutbornE_commerce.Controllers
         private readonly IFilesManager _filesManager;
         private readonly IProductImageRepositry ProductImageRepositry;
 
-        public ProductsController(IProductImageRepositry productImageRepositry,
-                                  IProductRepository productRepository, IFilesManager filesManager
-                                  )
+        public ProductsController(IProductImageRepositry productImageRepositry, IProductRepository productRepository, IFilesManager filesManager)
         {
             _productRepository = productRepository;
             _filesManager = filesManager;
@@ -60,7 +59,7 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            string[] includes = new string[] { "Category", "PreOrderDetails", "Reviews", "ProductImage" };
+            string[] includes = new string[] { "Category", "Reviews.User", "ProductImage" };
 
             var product = await _productRepository.Find(i => i.Id == id, false, includes);
             if (product == null)
@@ -75,6 +74,13 @@ namespace OutbornE_commerce.Controllers
             }
 
             var data = product.Adapt<ProductDto>();
+
+            data.ProductImage = product.ProductImage
+                .Select(img => img.ImageUrl)
+                .ToList();
+
+            data.CategoryNameEn = product.Category.NameEn;
+            data.CategoryNameAr = product.Category.NameAr;
 
             return Ok(new PaginationResponse<ProductDto>
             {
@@ -116,7 +122,13 @@ namespace OutbornE_commerce.Controllers
                 // Map product data
                 var product = model.Adapt<Product>();
 
-                // Process product colors and sizes
+
+                var uploadedFile = await _filesManager.UploadFile(model.MainImagePhoto, "Products");
+                if (uploadedFile is not null)
+                {
+                    product.MainImageUrl = uploadedFile.Url;
+                }
+
                 foreach (var image in model.ProductImages)
                 {
                     var fileModel = await _filesManager.UploadFile(image, "Products");
@@ -127,6 +139,7 @@ namespace OutbornE_commerce.Controllers
                             ImageUrl = fileModel.Url,
                             ProductId = product.Id,
                         };
+                        product.ProductImage.Add(productColorImage);
                     }
                 }
 
@@ -160,9 +173,9 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromForm] ProductForCreateDto model, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateProduct([FromForm] ProductForUpdateDto model, CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid || !model.ProductImages.Any())
+            if (!ModelState.IsValid)
             {
                 return BadRequest(new Response<Guid>
                 {
@@ -177,8 +190,7 @@ namespace OutbornE_commerce.Controllers
             {
                 await _productRepository.BeginTransactionAsync();
 
-                // Fetch the existing product along with related entities
-                string[] includes = { "Category", "PreOrderDetails", "Reviews", "ProductImage" };
+                string[] includes = { "Category", "Reviews", "ProductImage" };
 
                 var existingProduct = await _productRepository.Find(x => x.Id == model.Id, true, includes);
                 if (existingProduct == null)
@@ -194,29 +206,88 @@ namespace OutbornE_commerce.Controllers
 
                 existingProduct = model.Adapt(existingProduct);
 
-                // Clear existing photos
-                foreach (var image in existingProduct.ProductImage.ToList())
-                {
-                    _filesManager.DeleteFile(image.ImageUrl);
-                    ProductImageRepositry.Delete(image);
-                }
+                #region Handle Photos
 
-                // Add new product colors and handle images
-                foreach (var productImage in model.ProductImages)
-                {
-                    existingProduct.ProductImage = new List<ProductImage>();
 
-                    var fileModel = await _filesManager.UploadFile(productImage, "Products");
-                    if (fileModel != null)
+                // 1. Handle Product Images (Gallery)
+                var existingImages = existingProduct.ProductImage.ToList();
+
+                // If user sent no new files and no URLs => delete all old images
+                bool hasNoNewImages = model.ProductImages == null || !model.ProductImages.Any();
+                bool hasNoImageUrls = model.ImagesUrl == null || !model.ImagesUrl.Any();
+
+                if (hasNoNewImages && hasNoImageUrls)
+                {
+                    foreach (var image in existingImages)
                     {
-                        var productColorImage = new ProductImage
-                        {
-                            ImageUrl = fileModel.Url,
-                            ProductId = existingProduct.Id,
-                        };
-                        existingProduct.ProductImage.Add(productColorImage);
+                        _filesManager.DeleteFile(image.ImageUrl);
+                        ProductImageRepositry.Delete(image);
                     }
                 }
+                else
+                {
+                    // Delete any image that's not in the submitted URLs
+                    foreach (var image in existingImages)
+                    {
+                        if (model.ImagesUrl == null || !model.ImagesUrl.Contains(image.ImageUrl))
+                        {
+                            _filesManager.DeleteFile(image.ImageUrl);
+                            ProductImageRepositry.Delete(image);
+                        }
+                    }
+
+                    // Add new uploaded images (if any)
+                    if (model.ProductImages != null && model.ProductImages.Any())
+                    {
+                        foreach (var file in model.ProductImages)
+                        {
+                            var uploaded = await _filesManager.UploadFile(file, "Products");
+                            if (uploaded != null)
+                            {
+                                var productImage = new ProductImage
+                                {
+                                    ImageUrl = uploaded.Url,
+                                    ProductId = existingProduct.Id
+                                };
+
+                                existingProduct.ProductImage.Add(productImage);
+                            }
+                        }
+                    }
+                }
+
+                // 2. Handle Main Image
+                if (model.MainImagePhoto != null)
+                {
+                    // Upload the new main image
+                    var fileModel = await _filesManager.UploadFile(model.MainImagePhoto, "Products");
+                    if (fileModel != null)
+                    {
+                        // Delete old main image
+                        if (!string.IsNullOrEmpty(existingProduct.MainImageUrl))
+                        {
+                            _filesManager.DeleteFile(existingProduct.MainImageUrl);
+                        }
+
+                        // Set new main image URL
+                        existingProduct.MainImageUrl = fileModel.Url;
+                    }
+                }
+                else if (string.IsNullOrEmpty(model.MainImagesUrl))
+                {
+                    // No main image was submitted at all => delete existing one
+                    if (!string.IsNullOrEmpty(existingProduct.MainImageUrl))
+                    {
+                        _filesManager.DeleteFile(existingProduct.MainImageUrl);
+                        existingProduct.MainImageUrl = null;
+                    }
+                }
+                else
+                {
+                    // MainImagesUrl was submitted => keep it as is
+                    existingProduct.MainImageUrl = model.MainImagesUrl;
+                }
+                #endregion
 
                 // Update product in the repository
                 _productRepository.Update(existingProduct);

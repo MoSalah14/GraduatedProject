@@ -4,12 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using OutbornE_commerce.BAL.Dto.ContactUs;
-using Azure.Core;
-using OutbornE_commerce.BAL.Dto.Newsletters;
-using OutbornE_commerce.BAL.Dto;
 
 namespace OutbornE_commerce.BAL.EmailServices
 {
@@ -39,33 +33,6 @@ namespace OutbornE_commerce.BAL.EmailServices
             SmtpClient smtpClient = new(serverData.Host)
             {
                 Port = 587,
-                Credentials = new NetworkCredential(serverData.Email, serverData.Password),
-                EnableSsl = true,
-            };
-
-            await smtpClient.SendMailAsync(message);
-
-            smtpClient.Dispose();
-        }
-
-        public async Task SendEmailContactUsAsync(ContactUsForCreationDto contact)
-        {
-            var serverData = _mailSettings;
-            MailMessage message = new()
-            {
-                From = new MailAddress(serverData.Email!, serverData.DisplayName),
-                Body = $"Name: {contact.FirstName} {contact.LastName}\nEmail: {contact.Email}\n\nMessage:\n{contact.Body}",
-                Subject = contact.Subject,
-                IsBodyHtml = true
-            };
-
-            message.To.Add(serverData.Email);
-
-
-            message.ReplyToList.Add(new MailAddress(contact.Email));
-            SmtpClient smtpClient = new(serverData.Host)
-            {
-                Port = _mailSettings.Port,
                 Credentials = new NetworkCredential(serverData.Email, serverData.Password),
                 EnableSsl = true,
             };

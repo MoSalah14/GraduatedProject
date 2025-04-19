@@ -8,12 +8,22 @@ namespace OutbornE_commerce.DAL.Models
 {
     public class Product : BaseEntity
     {
+        [MaxLength(DBRules.ProductNameLenght)]
         public string NameEn { get; set; }
+
+        [MaxLength(DBRules.ProductNameLenght)]
         public string NameAr { get; set; }
 
+        [MaxLength(DBRules.ParagraphLenght)]
         public string AboutEn { get; set; }
+
+        [MaxLength(DBRules.ParagraphLenght)]
         public string AboutAr { get; set; }
+        [MaxLength(DBRules.CaptionLenght)]
+
         public string MaterialEn { get; set; }
+
+        [MaxLength(DBRules.CaptionLenght)]
         public string MaterialAr { get; set; }
         public int QuantityInStock { get; set; }
         public decimal Price { get; set; }
@@ -22,7 +32,7 @@ namespace OutbornE_commerce.DAL.Models
         public bool IsPreOrder { get; set; } = false;
 
         public bool IsActive { get; set; } = true;
-        public string MainImageUrl { get; set; }
+        public string? MainImageUrl { get; set; }
 
         public Guid CategoryId { get; set; }
         public Category Category { get; set; }

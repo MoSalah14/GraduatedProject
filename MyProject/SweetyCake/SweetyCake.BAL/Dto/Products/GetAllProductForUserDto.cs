@@ -1,8 +1,4 @@
-﻿using OutbornE_commerce.BAL.Dto.Colors;
-using OutbornE_commerce.BAL.Dto.ProductSizes;
-using OutbornE_commerce.BAL.Dto.Sizes;
-using OutbornE_commerce.DAL.Enums;
-
+﻿
 namespace OutbornE_commerce.BAL.Dto.Products
 {
     public class GetAllProductForUserDto

@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using OutbornE_commerce.BAL.Dto;
-using OutbornE_commerce.BAL.Dto.ContactUs;
-using OutbornE_commerce.BAL.Dto.Newsletters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +9,6 @@ namespace OutbornE_commerce.BAL.EmailServices
 {
     public interface IEmailSenderCustom : IEmailSender
     {
-        Task SendEmailContactUsAsync(ContactUsForCreationDto contact);
         Task SendConfirmationEmailToUserAsync(string userEmail);
     }
 }

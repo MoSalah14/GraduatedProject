@@ -18,8 +18,9 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public decimal Price { get; set; }
         public decimal DiscountPrice { get; set; }
         public string MainImageUrl { get; set; }
-
-        public string CategoryName { get; set; }
+        public string CategoryNameEn { get; set; }
+        public string CategoryNameAr { get; set; }
+        public List<string> ProductImage { get; set; }
         public string? ProductCode { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }

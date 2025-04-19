@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using OutbornE_commerce.BAL.Dto.Currencies;
-using OutbornE_commerce.DAL.Data;
+﻿
 using System.Security.Claims;
 
 namespace OutbornE_commerce.Extensions

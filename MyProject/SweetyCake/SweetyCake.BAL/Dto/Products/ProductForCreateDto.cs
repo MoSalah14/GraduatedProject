@@ -18,8 +18,14 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public bool IsPreOrder { get; set; } = false;
 
         public bool IsActive { get; set; } = true;
-        public string MainImageUrl { get; set; }
+        public IFormFile? MainImagePhoto { get; set; }
         public Guid CategoryId { get; set; }
-        public List<IFormFile> ProductImages { get; set; }
+        public List<IFormFile>? ProductImages { get; set; }
+    }
+
+    public class ProductForUpdateDto : ProductForCreateDto
+    {
+        public List<string>? ImagesUrl { get; set; }
+        public string? MainImagesUrl { get; set; }
     }
 }

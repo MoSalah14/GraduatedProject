@@ -1,15 +1,7 @@
-﻿using Mapster;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿
 using Microsoft.EntityFrameworkCore;
-using OutbornE_commerce.BAL.Dto;
-using OutbornE_commerce.BAL.Dto.Brands;
 using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.Categories;
-using OutbornE_commerce.DAL.Models;
-using OutbornE_commerce.FilesManager;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OutbornE_commerce.Controllers
 {
