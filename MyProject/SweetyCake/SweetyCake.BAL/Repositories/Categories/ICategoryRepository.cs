@@ -12,6 +12,5 @@ namespace OutbornE_commerce.BAL.Repositories.Categories
 {
     public interface ICategoryRepository : IBaseRepository<Category>
     {
-        Task<PagainationModel<IEnumerable<GetAllCategorieswithSubsDto>>> GetAllCategoriesWithSubCategoriesAsync(
-                int pageNumber, int pageSize, string? searchTerm, CancellationToken cancellationToken);    }
+    }
 }

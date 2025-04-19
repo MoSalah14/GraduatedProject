@@ -15,12 +15,10 @@ namespace OutbornE_commerce.Controllers
     public class AddressesController : ControllerBase
     {
         private readonly IAddressRepository _addressRepository;
-        private readonly ICityRepository _cityRepository;
 
-        public AddressesController(ICityRepository cityRepository, IAddressRepository addressRepository)
+        public AddressesController( IAddressRepository addressRepository)
         {
             _addressRepository = addressRepository;
-            _cityRepository = cityRepository;
         }
 
         [HttpGet]

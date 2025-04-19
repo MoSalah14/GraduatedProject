@@ -1,22 +1,8 @@
-﻿using Google.Apis.Auth;
-using Mapster;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication;
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.SqlServer.Server;
-using Newtonsoft.Json;
 using OutbornE_commerce.BAL.AuthServices;
-using OutbornE_commerce.BAL.Dto;
-using OutbornE_commerce.BAL.Repositories.Currencies;
-using OutbornE_commerce.DAL.Enums;
-using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
 using System.Security.Claims;
 using System.Text;
@@ -37,7 +23,6 @@ namespace OutbornE_commerce.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
-        private readonly ICurrencyRepository _currencyRepository;
         private readonly SignInManager<User> signInManager;
         private readonly IConfiguration Configuration;
         private readonly IEmailSenderCustom emailSender;
@@ -46,14 +31,13 @@ namespace OutbornE_commerce.Controllers
         private readonly IWebHostEnvironment webHostEnvironment;
 
         public AuthController(IWebHostEnvironment env, UserManager<User> userManager, IAuthService authService,
-            ICurrencyRepository currencyRepository, SignInManager<User> signInManager,
+             SignInManager<User> signInManager,
             IConfiguration _configuration, IEmailSenderCustom emailSender,
             IOptions<FrontBaseUrlSettings> option, IHostEnvironment _env)
         {
             Environment = _env;
             _userManager = userManager;
             _authService = authService;
-            _currencyRepository = currencyRepository;
             this.signInManager = signInManager;
             Configuration = _configuration;
             this.emailSender = emailSender;
@@ -111,8 +95,6 @@ namespace OutbornE_commerce.Controllers
             }
             catch (Exception ex)
             {
-                await _currencyRepository.RollbackTransactionAsync();
-
                 return Ok(new AuthResponseModel
                 {
                     IsError = true,

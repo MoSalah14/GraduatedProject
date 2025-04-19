@@ -13,7 +13,6 @@ namespace OutbornE_commerce.BAL.EmailServices
     public interface IEmailSenderCustom : IEmailSender
     {
         Task SendEmailContactUsAsync(ContactUsForCreationDto contact);
-        Task SendEmailToListAsync(SendMultipleEmailsDto sendMultipleEmailsDto);
         Task SendConfirmationEmailToUserAsync(string userEmail);
     }
 }

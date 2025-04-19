@@ -7,7 +7,6 @@ using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Brands;
 using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.Categories;
-using OutbornE_commerce.BAL.Repositories.ProductSizes;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.FilesManager;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -123,40 +122,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
-        [HttpGet("GetAllSubCategoriesForSpecificCategory/{id}")]
-        public async Task<IActionResult> GetAllSubCategoriesForSpecificCategory(Guid id)
-        {
-            string[] includes = { "CategorySubCategories", "CategorySubCategories.SubCategory" };
-
-            var category = await _categoryRepository.Find(x => x.Id == id, false, includes);
-
-            if (category == null)
-            {
-                return NotFound(new Response<string>
-                {
-                    Data = null,
-                    IsError = true,
-                    Message = "Category not found",
-                    MessageAr = "هذه الفئة غير موجودة",
-                    Status = (int)StatusCodeEnum.NotFound
-                });
-            }
-
-            var subCategories = category.CategorySubCategories
-                                        .Select(cs => cs.SubCategory)
-                                        .ToList();
-
-            var subCategoryDtos = subCategories.Adapt<List<getAllSubCategoriesDto>>();
-
-            return Ok(new Response<List<getAllSubCategoriesDto>>
-            {
-                Data = subCategoryDtos,
-                IsError = false,
-                Message = "Subcategories retrieved successfully",
-                MessageAr = "تم جلب الفئات الفرعية بنجاح",
-                Status = (int)StatusCodeEnum.Ok
-            });
-        }
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById(Guid id)
@@ -183,40 +149,7 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
-        [HttpGet("GetAllCategoriesWithSubCategories")]
-        public async Task<IActionResult> GetAllCategoriesWithSubCategories(CancellationToken cancellationToken,
-            int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
-        {
-            try
-            {
-                var categoriesWithSubCategories = await
-                    _categoryRepository.GetAllCategoriesWithSubCategoriesAsync(
-                    pageNumber, pageSize, searchTerm, cancellationToken);
-
-                var data = categoriesWithSubCategories.Data.Adapt<List<GetAllCategorieswithSubsDto>>();
-
-                // Return paginated data as response
-                return Ok(new PaginationResponse<List<GetAllCategorieswithSubsDto>>
-                {
-                    Data = data,
-                    IsError = false,
-                    Status = (int)StatusCodeEnum.Ok,
-                    PageNumber = pageNumber,
-                    PageSize = pageSize,
-                    TotalCount = categoriesWithSubCategories.TotalCount
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)StatusCodeEnum.ServerError, new Response<string>
-                {
-                    Data = ex.Message,
-                    IsError = true,
-                    Message = "An error occurred while fetching categories and subcategories",
-                    Status = (int)StatusCodeEnum.ServerError
-                });
-            }
-        }
+       
 
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromForm] CategoryDto model, CancellationToken cancellationToken)
@@ -376,21 +309,6 @@ namespace OutbornE_commerce.Controllers
                         Message = "Category not found",
                         MessageAr = "الكتيجوري غير موجود",
                         Status = (int)StatusCodeEnum.NotFound
-                    });
-                }
-
-                bool hasDiscountCategories = category.DiscountCategories != null && category.DiscountCategories.Any();
-                bool hasCategorySubCategories = category.CategorySubCategories != null && category.CategorySubCategories.Any();
-
-                if (hasDiscountCategories || hasCategorySubCategories)
-                {
-                    return Ok(new Response<Guid>
-                    {
-                        Data = id,
-                        IsError = true,
-                        Message = "The category cannot be deleted because it is connected to other data.",
-                        MessageAr = "لا يمكن حذف الكتيجوري لأنه مرتبط ببيانات أخرى.",
-                        Status = (int)StatusCodeEnum.BadRequest
                     });
                 }
 

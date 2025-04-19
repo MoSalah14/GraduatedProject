@@ -12,8 +12,5 @@ namespace Infrastructure.Services.PaymentWithStripeService
         Task<Session> GetCheckoutSession(string sessionId);
 
         Task<Session> GetSessionByPaymentIntentAsync(string paymentIntentId);
-
-        Task<ConfirmOrderRequstDto> HandlePaymentStatusAsync(string sessionId, bool PaymentStatus, CancellationToken cancellationToken);
-
     }
 }

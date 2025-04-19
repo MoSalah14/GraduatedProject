@@ -24,6 +24,5 @@ namespace OutbornE_commerce.BAL.Dto.Delivery
         public string UserID { get; set; }
         public Guid AddressID { get; set; }
         public string OrderNumber { get; set; }
-        public List<ReturnItemReason> ProductItems { get; set; } = new List<ReturnItemReason>();
     }
 }

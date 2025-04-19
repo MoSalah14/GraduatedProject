@@ -20,6 +20,5 @@ namespace OutbornE_commerce.DAL.Models
         public Order Order { get; set; }
 
         public Guid? ReturnedOrdersID { get; set; }
-        public ReturnedOrders returnedOrders { get; set; }
     }
 }

@@ -22,7 +22,6 @@ namespace OutbornE_commerce.DAL.Models
         public bool IsDeleted { get; set; } = false;
         public virtual ICollection<Reviews> Users_Reviews { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<WishList> WishLists { get; set; }
         public virtual Wallets Wallet { get; set; }
     }

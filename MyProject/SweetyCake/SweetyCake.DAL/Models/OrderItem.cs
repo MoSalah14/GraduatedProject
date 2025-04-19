@@ -15,7 +15,5 @@ namespace OutbornE_commerce.DAL.Models
         public double ProductWeight { get; set; }
 
         public virtual Order? Order { get; set; }
-        public virtual ProductSize? ProductSize { get; set; }
-        public ReturnItemReason? ReturnItemReason { get; set; }
     }
 }

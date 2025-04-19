@@ -11,7 +11,7 @@ namespace OutbornE_commerce.DAL.Models
         public string UserId { get; set; }
         public User? UserWishList { get; set; }
         public Guid ProductId { get; set; }
-        public Product? ProductWishList { get; set; }
+        public Product ProductWishList { get; set; }
         public string CreatedBy { get; set; } = "Admin";
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
     }

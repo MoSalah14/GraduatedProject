@@ -4,14 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using OutbornE_commerce.BAL.Dto.OrderDto;
 using OutbornE_commerce.BAL.EmailServices;
-using OutbornE_commerce.BAL.Repositories.BaseRepositories;
-using OutbornE_commerce.BAL.Repositories.Brands;
-using OutbornE_commerce.BAL.Repositories.OrderItemRepo;
 using OutbornE_commerce.BAL.Repositories.OrderRepo;
-using OutbornE_commerce.BAL.Repositories.ProductSizes;
 using OutbornE_commerce.BAL.Services.Cart_Service;
 using OutbornE_commerce.BAL.Services.OrderService;
-using OutbornE_commerce.BAL.Services.Wallet;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
 using OutbornE_commerce.FilesManager;
@@ -30,7 +25,6 @@ namespace OutbornE_commerce.Controllers
     {
         private readonly IOrderRepository orderRepository;
         private readonly IOrderService orderService;
-        private readonly WalletService walletService;
         private readonly IPaymentWithStripeService paymentWithStripeService;
         private readonly IConfiguration configuration;
         private readonly ICartService cartService;
@@ -42,11 +36,10 @@ namespace OutbornE_commerce.Controllers
             ICartService cartService,
             IConfiguration configuration, IPaymentWithStripeService paymentWithStripeService,
             IOrderRepository orderRepository,
-            IOrderService orderService, WalletService walletService)
+            IOrderService orderService)
         {
             this.orderRepository = orderRepository;
             this.orderService = orderService;
-            this.walletService = walletService;
             this.paymentWithStripeService = paymentWithStripeService;
             this.paymentWithStripeService = paymentWithStripeService;
             this.configuration = configuration;
@@ -223,27 +216,7 @@ namespace OutbornE_commerce.Controllers
                     {
                         session.Metadata.TryGetValue("paymentType", out var paymentType);
                         session.Metadata.TryGetValue("UserId", out userId);
-                        if (paymentType == "wallet")
-                        {
-                            if (session.AmountTotal.HasValue)
-                            {
-                                decimal amount = session.AmountTotal.Value / 100m;
-                                await walletService.UpdateAmount(userId, amount, cancellationToken);
-                                await walletService.RecordWalletTransactionAsync(userId, amount, session.Id, cancellationToken);
-                            }
-                            else
-                                throw new InvalidOperationException("AmountTotal is null");
-                        }
-                        else
-                        {
-                            confirmOrder= await paymentWithStripeService.HandlePaymentStatusAsync(session.Id, true, cancellationToken);
-                        }
-
-                    }
-                    else
-                    {
-                        confirmOrder = await paymentWithStripeService.HandlePaymentStatusAsync(session.Id, false, cancellationToken);
-                        await cartService.ClearCartAsync(userId);
+                       
                     }
                     var user = await _userManager.FindByIdAsync(userId.ToString());
 

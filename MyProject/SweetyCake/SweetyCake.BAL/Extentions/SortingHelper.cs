@@ -25,16 +25,12 @@ namespace OutbornE_commerce.BAL.Extentions
                         : query.OrderByDescending(p => ((Product)(object)p).CreatedOn),
 
                     "price" => sortingCriteria.IsAscending
-                        ? query.OrderBy(p => ((Product)(object)p).ProductColors
-                            .SelectMany(pc => pc.ProductSizes)
-                            .Min(ps => ps.Price))
-                        : query.OrderByDescending(p => ((Product)(object)p).ProductColors
-                            .SelectMany(pc => pc.ProductSizes)
-                            .Min(ps => ps.Price)),
+                        ? query.OrderBy(p => ((Product)(object)p).Price)
+                        : query.OrderByDescending(p => ((Product)(object)p).Price),
 
-                    "bestseller" => sortingCriteria.IsAscending
-                        ? query.OrderBy(p => ((Product)(object)p).Label)
-                        : query.OrderByDescending(p => ((Product)(object)p).Label),
+                    //"bestseller" => sortingCriteria.IsAscending
+                    //    ? query.OrderBy(p => ((Product)(object)p).Label)
+                    //    : query.OrderByDescending(p => ((Product)(object)p).Label),
 
                     _ => sortingCriteria.IsAscending
                         ? query.OrderBy(p => ((Product)(object)p).NameEn)

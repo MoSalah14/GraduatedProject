@@ -13,6 +13,5 @@ namespace OutbornE_commerce.BAL.Services.OrderService
     {
         Task<Dto.Response<string>> CreateOrderAsync(CreateOrderDto model, string userId, CancellationToken cancellationToken);
 
-        Task<ReturnedDeliveryObject> CreateReturnOrder(string UserId, ReturnedOrdersDto ReturendOrder, CancellationToken cancellationToken);
     }
 }

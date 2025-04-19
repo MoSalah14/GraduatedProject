@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OutbornE_commerce.BAL.Repositories.ProductImageRepo
 {
-    public class ProductImageRepositry : BaseRepository<ProductColorImage>,IProductImageRepositry
+    public class ProductImageRepositry : BaseRepository<ProductImage>,IProductImageRepositry
     {
         public ProductImageRepositry(ApplicationDbContext context) : base(context)
         {

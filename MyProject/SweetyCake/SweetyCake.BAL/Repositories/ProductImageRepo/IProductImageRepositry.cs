@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OutbornE_commerce.BAL.Repositories.ProductImageRepo
 {
-    public interface IProductImageRepositry :IBaseRepository<ProductColorImage>
+    public interface IProductImageRepositry :IBaseRepository<ProductImage>
     {
     }
 }

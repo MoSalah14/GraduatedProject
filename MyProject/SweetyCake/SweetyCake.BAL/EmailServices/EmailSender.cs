@@ -6,7 +6,6 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using OutbornE_commerce.BAL.Repositories.SMTP_Server;
 using OutbornE_commerce.BAL.Dto.ContactUs;
 using Azure.Core;
 using OutbornE_commerce.BAL.Dto.Newsletters;
@@ -17,13 +16,11 @@ namespace OutbornE_commerce.BAL.EmailServices
     public class EmailSender : IEmailSenderCustom
     {
         private readonly EmailSettings _mailSettings;
-        private readonly ISMTPRepository _sMTPRepository;
 
         public EmailSender(
-            IOptions<EmailSettings> mailSettings, ISMTPRepository sMTPRepository)
+            IOptions<EmailSettings> mailSettings)
         {
             _mailSettings = mailSettings.Value;
-            _sMTPRepository = sMTPRepository;
         }
 
         public async Task SendEmailAsync(string email, string subject, string? htmlMessage)
@@ -50,44 +47,6 @@ namespace OutbornE_commerce.BAL.EmailServices
 
             smtpClient.Dispose();
         }
-        public async Task SendEmailToListAsync(SendMultipleEmailsDto sendMultipleEmailsDto)
-        {
-            try
-            {
-                var serverData = (await _sMTPRepository.FindAllAsync(null)).FirstOrDefault();
-                if (serverData == null)
-                {
-                    throw new InvalidOperationException("SMTP server data not found.");
-                }
-
-                using (var message = new MailMessage())
-                {
-                    message.From = new MailAddress(serverData.Email!, serverData.DisplayName);
-                    message.Subject = sendMultipleEmailsDto.Subject;
-                    message.Body = sendMultipleEmailsDto.Body; 
-                    message.IsBodyHtml = true;
-
-                    foreach (var email in sendMultipleEmailsDto.Emails)
-                    {
-                        message.To.Add(email);
-                    }
-
-                    using (var smtpClient = new SmtpClient(serverData.Host))
-                    {
-                        smtpClient.Port = 587;
-                        smtpClient.Credentials = new NetworkCredential(serverData.Email, serverData.Password);
-                        smtpClient.EnableSsl = true;
-
-                        await smtpClient.SendMailAsync(message);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error sending email: {ex.Message}");
-            }
-        }
-
 
         public async Task SendEmailContactUsAsync(ContactUsForCreationDto contact)
         {

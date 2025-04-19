@@ -11,6 +11,5 @@ namespace OutbornE_commerce.DAL.Models
         public double Weight { get; set; } // Weight Product
         public decimal Price { get; set; }
         public Guid CountryId { get; set; }
-        public Country Country { get; set; }
     }
 }

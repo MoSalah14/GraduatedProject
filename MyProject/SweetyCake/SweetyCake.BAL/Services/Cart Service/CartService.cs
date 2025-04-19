@@ -32,70 +32,68 @@ namespace OutbornE_commerce.BAL.Services.Cart_Service
 
         public async Task<GetCartResponseDto?> GetCartDetails(string userId)
         {
-            var UserCart = await _Redis.StringGetAsync(userId);
-            var cart = UserCart.IsNullOrEmpty ? null : JsonConvert.DeserializeObject<CartDto>(UserCart);
+            //var UserCart = await _Redis.StringGetAsync(userId);
+            //var cart = UserCart.IsNullOrEmpty ? null : JsonConvert.DeserializeObject<CartDto>(UserCart);
 
-            if (cart == null) return null;
+            //if (cart == null) return null;
 
-            decimal totalCartPrice = 0;
-            decimal totalCartWeight = 0;
-            var userCartDetails = new List<GetUserCart>();
+            //decimal totalCartPrice = 0;
+            //decimal totalCartWeight = 0;
+            //var userCartDetails = new List<GetUserCart>();
 
-            foreach (var item in cart.Items)
-            {
-                var product = await productRepository.Find(p =>
-                    p.ProductColors.Any(c => c.ProductSizes.Any(s => s.Id == item.ProductSizeId)), false,
-                    new string[] { "ProductColors", "ProductColors.Color", "ProductColors.ProductSizes", "ProductColors.ProductColorImages", "ProductColors.ProductSizes.Size" }
-                );
+            //foreach (var item in cart.Items)
+            //{
+            //    var product = await productRepository.Find(p =>
+            //        p.ProductColors.Any(c => c.ProductSizes.Any(s => s.Id == item.ProductSizeId)), false,
+            //        new string[] { "ProductColors", "ProductColors.Color", "ProductColors.ProductSizes", "ProductColors.ProductColorImages", "ProductColors.ProductSizes.Size" }
+            //    );
 
-                if (product != null)
-                {
-                    var productColor = product.ProductColors.FirstOrDefault(c =>
-                        c.ProductSizes.Any(s => s.Id == item.ProductSizeId));
-                    var productSize = productColor?.ProductSizes.FirstOrDefault(s => s.Id == item.ProductSizeId);
+            //    if (product != null)
+            //    {
+            //        var productColor = product.ProductColors.FirstOrDefault(c =>
+            //            c.ProductSizes.Any(s => s.Id == item.ProductSizeId));
+            //        var productSize = productColor?.ProductSizes.FirstOrDefault(s => s.Id == item.ProductSizeId);
 
-                    var cartItem = new GetUserCart
-                    {
-                        ProductId = product.Id,
-                        ProductSizeId = item.ProductSizeId,
-                        ProductNameEn = product.NameEn,
-                        ProductNameAr = product.NameAr,
-                        ProductImage = productColor.ProductColorImages.FirstOrDefault().ImageUrl,
-                        Color = productColor?.Color.NameEn,
-                        Size = productSize?.Size.Name,
-                        Quantity = item.Quantity,
-                        UnitPrice = productSize.DiscountedPrice > 0 ? productSize.DiscountedPrice : productSize.Price,
-                        ProductCode = product.ProductCode,
-                        Product_Weight = product.ProductColors!
-                                        .SelectMany(pc => pc.ProductSizes!)
-                                        .FirstOrDefault()!
-                                        .ProductWeight,
-                    };
-                    totalCartPrice += cartItem.Quantity * cartItem.UnitPrice;
+            //        var cartItem = new GetUserCart
+            //        {
+            //            ProductId = product.Id,
+            //            ProductSizeId = item.ProductSizeId,
+            //            ProductNameEn = product.NameEn,
+            //            ProductImage = productColor.ProductColorImages.FirstOrDefault().ImageUrl,
+            //            Color = productColor?.Color.NameEn,
+            //            Size = productSize?.Size.Name,
+            //            Quantity = item.Quantity,
+            //            UnitPrice = productSize.DiscountedPrice > 0 ? productSize.DiscountedPrice : productSize.Price,
+            //            Product_Weight = product.ProductColors!
+            //                            .SelectMany(pc => pc.ProductSizes!)
+            //                            .FirstOrDefault()!
+            //                            .ProductWeight,
+            //        };
+            //        totalCartPrice += cartItem.Quantity * cartItem.UnitPrice;
 
-                    if (cartItem.Product_Weight>0)
-                    {
-                        totalCartWeight  += cartItem.Quantity * cartItem.Product_Weight;
-                    }
-                    if (productSize.Quantity == 0)
-                    {
-                        cartItem.IsOutOfStock = true;
-                    }
-                    else cartItem.IsOutOfStock = false;
-                    userCartDetails.Add(cartItem);
-                }
-                else
-                {
-                    await RemoveFromCartAsync(userId, item.ProductSizeId);
-                }
-            }
+            //        if (cartItem.Product_Weight>0)
+            //        {
+            //            totalCartWeight  += cartItem.Quantity * cartItem.Product_Weight;
+            //        }
+            //        if (productSize.Quantity == 0)
+            //        {
+            //            cartItem.IsOutOfStock = true;
+            //        }
+            //        else cartItem.IsOutOfStock = false;
+            //        userCartDetails.Add(cartItem);
+            //    }
+            //    else
+            //    {
+            //        await RemoveFromCartAsync(userId, item.ProductSizeId);
+            //    }
+            //}
 
-            return new GetCartResponseDto
-            {
-                CartItems = userCartDetails,
-                TotalCartPrice = totalCartPrice,
-                TotalProductWeight= totalCartWeight
-            };
+            return new GetCartResponseDto();
+            //{
+            //    CartItems = userCartDetails,
+            //    TotalCartPrice = totalCartPrice,
+            //    TotalProductWeight= totalCartWeight
+            //};
         }
 
         public async Task<CartDto?> CreateOrUpdateCartAsync(string UserID, CreateCartDto newCartDto)

@@ -134,7 +134,7 @@ namespace OutbornE_commerce.Controllers
                 var GetCoupon = await baseRepository.Find(e => e.Id == id);
                 if (GetCoupon is null)
                 {
-                    return Ok(new Response<CityDto>
+                    return Ok(new Response<object>
                     {
                         Data = null,
                         IsError = true,
