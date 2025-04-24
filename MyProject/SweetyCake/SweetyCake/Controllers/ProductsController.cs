@@ -385,40 +385,39 @@ namespace OutbornE_commerce.Controllers
             }
         }
 
-        //[HttpGet("bestSeller")]
-        //public async Task<IActionResult> GetBestSellerProducts(string searchTerm = null, int pageNumber = 1, int pageSize = 10)
-        //{
-        //    var products = _productRepository.GetAllBestSellerProduct(searchTerm, pageNumber, pageSize);
-        //    int ProductCounts = await products.CountAsync();
-        //    var ProductQuery = await products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-
-        //    var data = ProductQuery.Adapt<List<GetAllProductForUserDto>>();
-
-        //    return Ok(new PaginationResponse<List<GetAllProductForUserDto>>()
-        //    {
-        //        PageSize = pageSize,
-        //        TotalCount = ProductCounts,
-        //        PageNumber = pageNumber,
-        //        Data = data,
-        //        IsError = false,
-        //        Status = (int)StatusCodeEnum.Ok
-        //    });
-        //}
-
-
-        [HttpGet("GetProductsBySuperCategory/{SuperCategoryId}")]
-        public async Task<IActionResult> GetProductsBySuperCategory(Guid SuperCategoryId, int pageNumber = 1, int pageSize = 10, [FromQuery] SortingCriteria? sortingCriteria = null)
+        [HttpGet("flashsale")]
+        public async Task<IActionResult> GetFlashSaleProducts(int flashsaleNumber)
         {
-            if (SuperCategoryId == Guid.Empty)
+            var products = await _productRepository.GetFlashSaleProductsAsync(flashsaleNumber);
+
+
+            var data = products.Adapt<List<GetAllProductForUserDto>>();
+
+            return Ok(new PaginationResponse<List<GetAllProductForUserDto>>()
+            {
+                PageSize = 0,
+                TotalCount = flashsaleNumber,
+                PageNumber = 1,
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+
+
+        [HttpGet("GetProductsByCategory/{CategoryId}")]
+        public async Task<IActionResult> GetProductsByCategory(Guid CategoryId, int pageNumber = 1, int pageSize = 10, [FromQuery] SortingCriteria? sortingCriteria = null)
+        {
+            if (CategoryId == Guid.Empty)
                 return BadRequest("Invalid category ID.");
 
-            var response = await _productRepository.GetProductsByCategoryAsync(SuperCategoryId, pageNumber, pageSize, sortingCriteria);
+            var response = await _productRepository.GetProductsByCategoryAsync(CategoryId, pageNumber, pageSize, sortingCriteria);
 
             if (response is null)
             {
                 return NotFound(new Response<Guid>
                 {
-                    Data = SuperCategoryId,
+                    Data = CategoryId,
                     IsError = true,
                     Message = "Not Found This Category",
                     MessageAr = " لم يتم العثور عليه",
@@ -426,6 +425,26 @@ namespace OutbornE_commerce.Controllers
                 });
             }
             return Ok(response);
+        }
+
+
+        [HttpGet("newArrivale")]
+        public async Task<IActionResult> GetNewArrivaleProducts()
+        {
+            var products = await _productRepository.GetNewArrivaleProductsAsync();
+
+
+            var data = products.Adapt<List<GetAllProductForUserDto>>();
+
+            return Ok(new PaginationResponse<List<GetAllProductForUserDto>>()
+            {
+                PageSize = 0,
+                TotalCount = 4,
+                PageNumber = 1,
+                Data = data,
+                IsError = false,
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
     }
 }

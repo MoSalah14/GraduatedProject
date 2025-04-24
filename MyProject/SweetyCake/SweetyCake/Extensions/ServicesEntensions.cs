@@ -10,6 +10,7 @@ using OutbornE_commerce.BAL.Repositories.CartItem;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.BAL.Repositories.Coupon;
 using OutbornE_commerce.BAL.Repositories.Coupones;
+using OutbornE_commerce.BAL.Repositories.HomeSections;
 using OutbornE_commerce.BAL.Repositories.OrderItemRepo;
 using OutbornE_commerce.BAL.Repositories.OrderRepo;
 using OutbornE_commerce.BAL.Repositories.ProductImageRepo;
@@ -57,6 +58,7 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IProductImageRepositry, ProductImageRepositry>();
             services.AddScoped<ICouponRepository, CouponRepository>();
             services.AddScoped<IShippingPriceRepo, ShippingPriceRepo>();
+            services.AddScoped<IHomeSectionRepository, HomeSectionRepository>();
             services.AddScoped<CouponService>();
 
             MapProfile.RegisterMappings();

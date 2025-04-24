@@ -25,6 +25,8 @@ namespace OutbornE_commerce.BAL.Repositories.Products
         Task<List<ProductNameIdModel>> GetProductNameAndIdByPaginationAsync(string searchTerm, int pageNumber, int pageSize);
 
         IQueryable<GetAllProductForUserDto> GetAllProductInHomePage(string searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null);
+        Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(int flashsaleNumber);
+        Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync();
 
     }
 }

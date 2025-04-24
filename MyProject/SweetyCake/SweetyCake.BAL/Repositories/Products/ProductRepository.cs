@@ -101,16 +101,17 @@ namespace OutbornE_commerce.BAL.Repositories.Products
 
         public async Task<PaginationResponse<List<GetAllProductForUserDtoًWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null)
         {
-            var query = _context.Products.Include(e => e.Category).Select(p => new GetAllProductForUserDtoًWithCategory
-            {
-                Id = p.Id,
-                NameEn = p.NameEn,
-                MainImageUrl = p.MainImageUrl,
-                Price = p.Price,
-                CategoryID = p.CategoryId,
-                CategoryNameEn = p.Category.NameEn,
-                CategoryNameAr = p.Category.NameAr
-            });
+            var query = _context.Products
+                .Where(e => e.CategoryId == CategoryId).Include(e => e.Category).Select(p => new GetAllProductForUserDtoًWithCategory
+                {
+                    Id = p.Id,
+                    NameEn = p.NameEn,
+                    MainImageUrl = p.MainImageUrl,
+                    Price = p.Price,
+                    CategoryID = p.CategoryId,
+                    CategoryNameEn = p.Category.NameEn,
+                    CategoryNameAr = p.Category.NameAr
+                });
 
             if (sortingCriteria is not null)
             {
@@ -132,8 +133,48 @@ namespace OutbornE_commerce.BAL.Repositories.Products
             };
         }
 
+        public async Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(int flashsaleNumber)
+        {
+            var productQuery = await _context.Products
+                .Where(e => e.DiscountPrice > 0)
+                .OrderByDescending(e => e.DiscountPrice)
+                .Take(flashsaleNumber)
+                .Select(p => new GetAllProductForUserDto
+                {
+                    Id = p.Id,
+                    NameEn = p.NameEn,
+                    NameAr = p.NameAr,
+                    MainImageUrl = p.MainImageUrl,
+                    CreatedOn = p.CreatedOn,
+                    Price = p.Price,
+                    DiscountPrice = p.DiscountPrice,
+                    RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
+                })
+                .ToListAsync();
 
+            return productQuery;
+        }
 
+        public async Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync()
+        {
+            var productQuery = await _context.Products
+                .OrderByDescending(e => e.CreatedOn)
+                .Take(4)
+                .Select(p => new GetAllProductForUserDto
+                {
+                    Id = p.Id,
+                    NameEn = p.NameEn,
+                    NameAr = p.NameAr,
+                    MainImageUrl = p.MainImageUrl,
+                    CreatedOn = p.CreatedOn,
+                    Price = p.Price,
+                    DiscountPrice = p.DiscountPrice,
+                    RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
+                })
+                .ToListAsync();
+
+            return productQuery;
+        }
 
     }
 }
