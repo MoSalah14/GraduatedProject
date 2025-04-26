@@ -4,10 +4,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.BAL.Repositories.Products;
+using OutbornE_commerce.FilesManager;
+using OutbornE_commerce.BAL.Repositories.ProductImageRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+builder.Services.AddScoped(typeof(IFilesManager), typeof(FilesManager));
+builder.Services.AddScoped(typeof(IProductImageRepositry), typeof(ProductImageRepositry));
 // Identity & Authentication
 builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
