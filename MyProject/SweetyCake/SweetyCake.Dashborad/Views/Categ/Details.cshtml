@@ -1,0 +1,36 @@
+﻿@model OutbornE_commerce.BAL.Dto.Categories.CategoryDto
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Details of Category</h1>
+        <hr />
+        <div>
+            <dl class="row">
+                <dt class="col-sm-2">English Name</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.NameEn)</dd>
+                <dt class="col-sm-2">Arabic Name</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.NameAr)</dd>
+                <dt class="col-sm-2">Image</dt>
+                <dd class="col-sm-10">
+             @*    <dd class="col-sm-10">
+                        @if (Model.Image != null && Model.Image.Length > 0)
+                        {
+                        <img src="@Model.Image" alt="Image" style="max-width: 100px; max-height: 100px;" />
+                        }
+                </dd> *@
+            </dl>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a> |
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript (Optional if you need JS features) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
