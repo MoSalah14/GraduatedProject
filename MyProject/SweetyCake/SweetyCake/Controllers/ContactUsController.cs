@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.ContactUs;
 using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Repositories.ContactUs;
+using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
 
 namespace OutbornE_commerce.Controllers
@@ -28,6 +29,26 @@ namespace OutbornE_commerce.Controllers
         {
             string[] includes = { "User" };
             var items = await _contactUsRepository.FindAllAsyncByPagination(null, pageNumber, pageSize, includes);
+
+            var data = items.Data.Adapt<List<ContactUsDto>>();
+            return Ok(new PaginationResponse<List<ContactUsDto>>
+            {
+                Data = data,
+                IsError = false,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                Status = (int)StatusCodeEnum.Ok,
+                TotalCount = items.TotalCount,
+            });
+        }
+
+        [HttpGet("GetAllContactsForUser")]
+        public async Task<IActionResult> GetAllUserContactUs(int pageNumber = 1, int pageSize = 10)
+        {
+            var userId = User.GetUserIdFromToken();
+
+            string[] includes = { "User" };
+            var items = await _contactUsRepository.FindAllAsyncByPagination(e=>e.UserId == userId, pageNumber, pageSize, includes);
 
             var data = items.Data.Adapt<List<ContactUsDto>>();
             return Ok(new PaginationResponse<List<ContactUsDto>>
@@ -69,55 +90,31 @@ namespace OutbornE_commerce.Controllers
         public async Task<IActionResult> CreateContactUs([FromBody] ContactUsForCreationDto model, CancellationToken cancellationToken)
         {
             var result = await _contactUsRepository.CreateContact(model, User.GetUserIdFromToken());
+
             if (!result)
             {
-                return Ok(new Response<string>
+                return BadRequest(new Response<string>
                 {
                     Data = "",
-                    IsError = false,
-                    Message = "Send Succeffully",
-                    MessageAr = " تم الارسال بنجاح",
-                    Status = (int)StatusCodeEnum.Ok
+                    IsError = true,
+                    Message = "Failed to send your message.",
+                    MessageAr = "فشل في إرسال رسالتك.",
+                    Status = (int)StatusCodeEnum.BadRequest
                 });
-
             }
+
             await _EmailSender.SendConfirmationEmailToUserAsync(model.Email);
             await _contactUsRepository.SaveAsync(cancellationToken);
+
             return Ok(new Response<string>
             {
                 Data = "",
                 IsError = false,
-                Message = "Send Succeffully",
-                MessageAr = " تم الارسال بنجاح",
+                Message = "Message sent successfully.",
+                MessageAr = "تم إرسال الرسالة بنجاح.",
                 Status = (int)StatusCodeEnum.Ok
             });
         }
-
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateContactUs([FromBody] ContactUsDto model, CancellationToken cancellationToken)
-        //{
-        //    var item = await _contactUsRepository.Find(c => c.Id == model.Id);
-        //    if (item is null)
-        //        return Ok(new Response<ContactUsDto>
-        //        {
-        //            Data = null,
-        //            IsError = true,
-        //            Message = "",
-        //            Status = (int)StatusCodeEnum.NotFound
-        //        });
-        //    item = model.Adapt<ContactUs>();
-        //    item.CreatedBy = "user";
-        //    _contactUsRepository.Update(item);
-        //    await _contactUsRepository.SaveAsync(cancellationToken);
-        //    return Ok(new Response<Guid>
-        //    {
-        //        Data = item.Id,
-        //        IsError = false,
-        //        Message = "Success",
-        //        MessageAr = "تم التعديل  بنجاح ",
-        //        Status = (int)StatusCodeEnum.Ok
-        //    });
-        //}
 
 
         [HttpDelete("{Id}")]
