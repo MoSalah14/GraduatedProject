@@ -8,6 +8,7 @@ using OutbornE_commerce.BAL.Repositories.BaseRepositories;
 using OutbornE_commerce.BAL.Repositories.Cart;
 using OutbornE_commerce.BAL.Repositories.CartItem;
 using OutbornE_commerce.BAL.Repositories.Categories;
+using OutbornE_commerce.BAL.Repositories.ContactUs;
 using OutbornE_commerce.BAL.Repositories.Coupon;
 using OutbornE_commerce.BAL.Repositories.Coupones;
 using OutbornE_commerce.BAL.Repositories.HomeSections;
@@ -44,6 +45,7 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IPaymentWithStripeService, PaymentWithStripeService>();
+            services.AddScoped<IContactUsRepository, ContactUsRepository>();
 
             services.AddScoped<IEmailSenderCustom, EmailSender>();
             services.AddScoped<IOrderService, OrderService>();

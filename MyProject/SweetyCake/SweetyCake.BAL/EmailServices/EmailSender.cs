@@ -23,8 +23,8 @@ namespace OutbornE_commerce.BAL.EmailServices
             MailMessage message =  new MailMessage()
             {
                 From = new MailAddress(serverData.Email!, serverData.DisplayName),
-                Body = $"{htmlMessage}",
                 Subject = subject,
+                Body = $"{htmlMessage}",
                 IsBodyHtml = true,
             };
 

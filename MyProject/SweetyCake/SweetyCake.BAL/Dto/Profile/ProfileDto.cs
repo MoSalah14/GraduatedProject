@@ -14,7 +14,6 @@ namespace OutbornE_commerce.BAL.Dto.Profile
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
 
-        public List<AddressDto> UserAddress { get; set; }
-        public Guid? CurrencyId { get; set; }
+        public List<AddressDto>? UserAddress { get; set; }
     }
 }

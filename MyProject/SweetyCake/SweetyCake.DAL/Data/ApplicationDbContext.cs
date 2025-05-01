@@ -15,7 +15,7 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ContactUsSetup> ContactUsSetups { get; set; }
+        public DbSet<ContactUs> ContactUs { get; set; }
         public DbSet<BagItem> BagItems { get; set; }
         public DbSet<HomeSection> HomeSections { get; set; }
 
