@@ -11,6 +11,11 @@ namespace OutbornE_commerce.DAL.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+        {
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -35,8 +40,7 @@ namespace OutbornE_commerce.DAL.Data
 
         public DbSet<ProductImage> ProductImage { get; set; }
         public DbSet<ShippingPrice> ShippingPrices { get; set; }
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-      : base(options) { }
+  
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
