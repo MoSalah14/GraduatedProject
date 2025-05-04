@@ -23,7 +23,7 @@ namespace SweetyCake.Dashborad.Controllers
         private readonly ICategoryRepository _categoryRepository;
 
         public ProdController(IProductImageRepositry productImageRepositry,
-            IProductRepository productRepository, IFilesManager filesManager , ICategoryRepository categoryRepository)
+            IProductRepository productRepository, IFilesManager filesManager, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _filesManager = filesManager;
@@ -41,7 +41,7 @@ namespace SweetyCake.Dashborad.Controllers
 
                 var ProductsWithPagination = await ProductsResponse.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
-                if(ProductsWithPagination == null)
+                if (ProductsWithPagination == null)
                 {
                     return BadRequest();
                 }
@@ -52,7 +52,7 @@ namespace SweetyCake.Dashborad.Controllers
             {
                 return BadRequest();
             }
-         
+
         }
 
         public async Task<IActionResult> Details(Guid id)
@@ -62,7 +62,7 @@ namespace SweetyCake.Dashborad.Controllers
             var product = await _productRepository.Find(i => i.Id == id, false, includes);
             if (product == null)
                 return BadRequest();
-        
+
 
             var data = product.Adapt<ProductDto>();
 
@@ -74,13 +74,13 @@ namespace SweetyCake.Dashborad.Controllers
             data.CategoryNameAr = product.Category.NameAr;
 
             return View(data);
-         
+
         }
 
         public async Task<IActionResult> Create()
         {
             var categories = await _categoryRepository.FindAllAsync(null);
-            if(categories != null)
+            if (categories != null)
             {
                 ViewBag.CategoryEn = new SelectList(categories, "Id", "NameEn");
                 ViewBag.CategoryAr = new SelectList(categories, "Id", "NameAr");
@@ -94,13 +94,13 @@ namespace SweetyCake.Dashborad.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest();
-             
+
             }
 
             if (model != null && model.ProductImages.Count > 10)
             {
                 return BadRequest();
-               
+
             }
 
             try
@@ -138,19 +138,19 @@ namespace SweetyCake.Dashborad.Controllers
 
 
                 return RedirectToAction("Index");
-              
+
             }
             catch (Exception ex)
             {
                 await _productRepository.RollbackTransactionAsync();
 
                 return BadRequest();
-               
+
             }
         }
 
-         public async Task<IActionResult> Edit(Guid id)
-         {
+        public async Task<IActionResult> Edit(Guid id)
+        {
             var categories = await _categoryRepository.FindAllAsync(null);
             if (categories != null)
             {
@@ -166,7 +166,7 @@ namespace SweetyCake.Dashborad.Controllers
                 return NotFound();
 
             return View(productDto);
-         }
+        }
 
 
         [HttpPost]
@@ -187,7 +187,7 @@ namespace SweetyCake.Dashborad.Controllers
                 if (existingProduct == null)
                 {
                     return NotFound();
-                   
+
                 }
 
                 existingProduct = model.Adapt(existingProduct);
@@ -281,14 +281,14 @@ namespace SweetyCake.Dashborad.Controllers
                 await _productRepository.CommitTransactionAsync();
 
                 return RedirectToAction("Index");
-            
+
             }
             catch (Exception ex)
             {
                 await _productRepository.RollbackTransactionAsync();
 
                 return BadRequest();
-             
+
             }
         }
 

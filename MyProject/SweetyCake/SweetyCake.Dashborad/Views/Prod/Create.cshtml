@@ -63,16 +63,44 @@
 				</div>
 				
 				<br />
-				<div class="form-group">
-					<label for="MainImagePhoto" class="control-label">Image</label>
-					<input type="file" asp-for="MainImagePhoto" class="form-control-file" />
-					<span asp-validation-for="MainImagePhoto" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<label for="ProductImages" class="control-label">Image</label>
-					<input type="file" asp-for="ProductImages" class="form-control-file" multiple />
-					<span asp-validation-for="ProductImages" class="text-danger"></span>
-				</div>
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">Main Product Image</label>
+                    <div class="image-upload-card">
+                        <label for="MainImagePhoto" class="upload-area">
+                            <div class="upload-prompt">
+                                <div class="icon-wrapper bg-light-primary rounded-circle p-3 mb-3">
+                                    <i class="fas fa-cloud-upload-alt text-primary fs-4"></i>
+                                </div>
+                                <h5 class="mb-1">Click to upload main image</h5>
+                                <p class="text-muted mb-0">Recommended: 800×800px, JPG/PNG format</p>
+                                <p class="text-muted">Max file size: 2MB</p>
+                            </div>
+                            <input type="file" asp-for="MainImagePhoto" class="d-none" id="MainImagePhoto" accept="image/*" />
+                        </label>
+                        <span asp-validation-for="MainImagePhoto" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-bold">Additional Product Images</label>
+                    <div class="image-upload-card">
+                        <label for="ProductImages" class="upload-area">
+                            <div class="upload-prompt">
+                                <div class="icon-wrapper bg-light-primary rounded-circle p-3 mb-3">
+                                    <i class="fas fa-images text-primary fs-4"></i>
+                                </div>
+                                <h5 class="mb-1">Click to upload multiple images</h5>
+                                <p class="text-muted mb-0">Up to 5 additional images</p>
+                                <p class="text-muted">Max 2MB each</p>
+                            </div>
+                            <input type="file" asp-for="ProductImages" class="d-none" id="ProductImages" multiple accept="image/*" />
+                        </label>
+                        <span asp-validation-for="ProductImages" class="text-danger small"></span>
+
+                    </div>
+                </div>
+
+                
 				<br />
 				<div class="form-group">
 					<input type="submit" value="Create" class="btn btn-primary" />
@@ -86,9 +114,76 @@
 	<a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
-<!-- Bootstrap JavaScript (Optional if you need JS features) -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<style>
+    .image-upload-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        background: #fff;
+        transition: all 0.3s ease;
+    }
+
+        .image-upload-card:hover {
+            border-color: #b3d4ff;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+        }
+
+    .upload-area {
+        display: block;
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px dashed #e0e0e0;
+        border-radius: 6px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .upload-area:hover {
+            border-color: #80bdff;
+            background-color: #f8fbff;
+        }
+
+    .icon-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gallery-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .thumbnail-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #e0e0e0;
+    }
+
+    /* Hide the actual file input */
+    .d-none {
+        display: none;
+    }
+</style>
+
+
+
+
+@* <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ *@
 @section Scripts {
 	@{
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
