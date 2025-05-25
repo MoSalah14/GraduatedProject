@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.WishList;
 using OutbornE_commerce.BAL.Repositories.WishList;
-using OutbornE_commerce.BAL.Services.Cart_Service;
-using OutbornE_commerce.BAL.Services.WishListsService;
 using OutbornE_commerce.Extensions;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -76,7 +72,7 @@ namespace OutbornE_commerce.Controllers
             var existingWishListItem = await wishListRepo
                 .FindByCondition(w => w.UserId == userId && w.ProductId == ProductId);
 
-            if (existingWishListItem.Count() != 0)
+            if (existingWishListItem.Any())
             {
                 return BadRequest(new Response<string>
                 {
@@ -168,5 +164,7 @@ namespace OutbornE_commerce.Controllers
                 Status = (int)StatusCodeEnum.Ok
             });
         }
+
+
     }
 }

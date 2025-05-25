@@ -28,7 +28,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public DateTime? CreatedOn { get; set; }
     }
 
-    public class GetAllProductForUserDtoًWithCategory : GetAllProductForUserDto
+    public class GetAllProductForUserDtoWithCategory : GetAllProductForUserDto
     {
         public Guid? CategoryID { get; set; }
         public string CategoryNameEn { get; set; }

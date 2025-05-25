@@ -38,6 +38,7 @@ namespace OutbornE_commerce.DAL.Models
         public Category Category { get; set; }
 
         public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();
+        public virtual ICollection<BagItem> BagItem { get; set; } = new List<BagItem>();
 
         public virtual ICollection<WishList> WishLists { get; set; } = new List<WishList>();
         public virtual ICollection<ProductImage> ProductImage { get; set; } = new List<ProductImage>();

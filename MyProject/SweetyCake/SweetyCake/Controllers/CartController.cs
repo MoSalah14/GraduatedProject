@@ -1,126 +1,179 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
 using OutbornE_commerce.BAL.Dto.Cart;
-using OutbornE_commerce.BAL.Dto.WishList;
-using OutbornE_commerce.BAL.Repositories.Cart;
-using OutbornE_commerce.BAL.Repositories.CartItem;
-using OutbornE_commerce.BAL.Repositories.Products;
-using OutbornE_commerce.BAL.Services.Cart_Service;
-using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.BAL.Repositories;
 using OutbornE_commerce.Extensions;
 
 namespace OutbornE_commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartController : ControllerBase
     {
-        private readonly ICartService CartService;
+        private readonly IBagItemsRepo _BagItemsRepo;
 
-        public CartController(ICartService _cartService)
+        public CartController(IBagItemsRepo CartRepo)
         {
-            CartService = _cartService;
+            _BagItemsRepo = CartRepo;
         }
 
-        [HttpGet("GetCartDetails")]
-        public async Task<IActionResult> GetCartDetails()
+        [HttpGet("GetAllByUserId")]
+        public async Task<ActionResult<List<CartItemDto>>> GetAllByUserId()
         {
-            var UserId = User.GetUserIdFromToken();
-            if (UserId is null)
-                return Unauthorized(new
-                {
-                    MessageEn = "Please Login First",
-                    MessageAr = "برجاء تسجيل الدخول اولا"
-                });
-
-            var UserCart = await CartService.GetCartDetails(UserId);
-            if (UserCart == null)
-            {
-                return BadRequest(new Response<GetUserCart>
+            var userId = User.GetUserIdFromToken();
+            if (userId == null)
+                return Unauthorized(new Response<string>
                 {
                     Data = null,
                     IsError = true,
-                    Message = "العربه فارغه",
-                    MessageAr = "العربه فارغه"
+                    Message = "Please Login First",
+                    MessageAr = "برجاء تسجيل الدخول اولا",
+                    Status = (int)StatusCodeEnum.Unauthorized
                 });
-            }
-            return Ok(new Response<GetCartResponseDto>
+
+            var Cart = await _BagItemsRepo.MapCartDto(userId);
+
+            if (Cart is null)
+                return Ok(new Response<List<CartItemDto>>
+                {
+                    IsError = false,
+                    Data = new List<CartItemDto>(),
+                    Message = "لا توجد قائمة امنيات",
+                    MessageAr = "Empty With List",
+                    Status = (int)StatusCodeEnum.Ok
+                });
+            return Ok(new Response<List<CartItemDto>>
             {
-                Data = UserCart,
+                Data = Cart,
                 IsError = false,
-                Message = "Success  Cart",
-                MessageAr = "تمت العملية بنجاح "
+                Message = "Cart retrieved successfully",
+                MessageAr = "تم استرجاع قائمة الرغبات بنجاح",
+                Status = (int)StatusCodeEnum.Ok
             });
         }
 
-        [HttpDelete("RemoveFromWishList")]
-        public async Task<IActionResult> RemoveFromWishList(Guid productSizeId)
+        [HttpPost("AddToCart")]
+        public async Task<IActionResult> AddToCart(Guid ProductId, CancellationToken cancellationToken)
         {
             var userId = User.GetUserIdFromToken();
-            if (userId == null) return Unauthorized(new
+            if (userId == null)
             {
-                MessageEn = "Please Login First",
-                MessageAr = "برجاء تسجيل الدخول اولا"
-            });
-
-            var removed = await CartService.RemoveFromCartAsync(userId, productSizeId);
-            if (!removed) return BadRequest(new Response<string>
-            {
-                IsError = true,
-                Message = "Faild to Remove From Cart",
-                MessageAr = "فشلت عملية المسح"
-            });
-
-            return Ok(new Response<bool>
-            {
-                Data = removed,
-                IsError = false,
-                Message = "Item removed from Cart successfully",
-                MessageAr = "تم إزالة المنتج من عربة التسوق بنجاح"
-            });
-        }
-
-        [HttpPost("UpdateUserCart")]
-        public async Task<IActionResult> CreateOrUpdateUserCart(CreateCartDto cartDto)
-        {
-            var UserId = User.GetUserIdFromToken();
-
-            if (UserId is null)
-                return Unauthorized(new
+                return Unauthorized(new Response<string>
                 {
-                    MessageEn = "Please Login First",
-                    MessageAr = "برجاء تسجيل الدخول اولا"
-                });
-
-            var UserCart = await CartService.CreateOrUpdateCartAsync(UserId, cartDto);
-
-            if (UserCart is not null)
-            {
-                UserCart.UserId = Guid.Parse(UserId);
-                UserCart.CartId = UserCart.UserId;
-                return Ok(new Response<CartDto>
-                {
-                    Data = UserCart,
-                    IsError = false,
-                    Message = "Success Create Or Update Cart",
-                    MessageAr = "تمت العملية بنجاح "
+                    Data = null,
+                    IsError = true,
+                    Message = "Please Login First",
+                    MessageAr = "برجاء تسجيل الدخول اولا",
+                    Status = (int)StatusCodeEnum.Unauthorized
                 });
             }
-            return BadRequest(new Response<CartDto>
+
+            var existingCartItem = await _BagItemsRepo
+                .FindByCondition(w => w.UserId == userId && w.ProductId == ProductId);
+
+            if (existingCartItem.Any())
             {
-                Data = UserCart,
-                IsError = true,
-                Message = "Faild to Create Or Update Cart",
-                MessageAr = "فشلت العملية "
+                return BadRequest(new Response<string>
+                {
+                    Message = "Product is already in your Cart",
+                    MessageAr = "المنتج موجود بالفعل في قائمة الرغبات",
+                    IsError = true,
+                    Status = (int)StatusCodeEnum.BadRequest
+                });
+            }
+
+            var UserCart = new BagItem()
+            {
+                UserId = userId,
+                ProductId = ProductId,
+                CreatedBy = "Admin",
+                CreatedOn = DateTime.Now
+            };
+
+            await _BagItemsRepo.Create(UserCart);
+            await _BagItemsRepo.SaveAsync(cancellationToken);
+
+            return Ok(new Response<Guid>
+            {
+                Data = UserCart.ProductId,
+                IsError = false,
+                Message = "Cart updated successfully",
+                MessageAr = "تم تحديث قائمة الرغبات بنجاح",
+                Status = (int)StatusCodeEnum.Ok
             });
         }
 
-        [HttpDelete("ClearUSerCart")]
-        public async Task<IActionResult> ClearUserCart()
+        [HttpDelete("ClearCart")]
+        public async Task<IActionResult> ClearCart(CancellationToken cancellationToken)
         {
-            var UserId = User.GetUserIdFromToken();
-            await CartService.ClearCartAsync(UserId);
+            try
+            {
+                var userId = User.GetUserIdFromToken();
+                if (userId == null)
+                    return Unauthorized(new
+                    {
+                        MessageEn = "Please Login First",
+                        MessageAr = "برجاء تسجيل الدخول اولا"
+                    });
 
-            return Ok("Deleted Succefully");
+                await _BagItemsRepo.ClearCartAsync(userId, cancellationToken);
+                return Ok(new Response<object>
+                {
+                    Data = null,
+                    IsError = false,
+                    Message = "Cart cleared successfully",
+                    MessageAr = "تمت إزالة قائمة الرغبات بنجاح"
+                });
+            }
+
+            catch
+            {
+                return BadRequest(new Response<object>
+                {
+                    Data = null,
+                    IsError = false,
+                    Message = "An Error With Delete",
+                    MessageAr = "حدثت مشكلة اثناء المسح"
+                });
+            }
+        }
+
+        [HttpDelete("RemoveFromCart/{productId}")]
+        public async Task<IActionResult> RemoveFromCart(Guid productId, CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserIdFromToken();
+            if (userId == null)
+                return Unauthorized(new Response<string>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = "Please Login First",
+                    MessageAr = "برجاء تسجيل الدخول اولا",
+                    Status = (int)StatusCodeEnum.Unauthorized
+                });
+
+            var removed = await _BagItemsRepo.Find(x => x.ProductId == productId && x.UserId == userId);
+
+            if (removed == null)
+                return BadRequest(new Response<string>
+                {
+                    IsError = true,
+                    Message = "Failed to remove item from Cart",
+                    MessageAr = "فشلت عملية المسح",
+                    Status = (int)StatusCodeEnum.BadRequest,
+                    Data = null
+                });
+            _BagItemsRepo.Delete(removed);
+            await _BagItemsRepo.SaveAsync(cancellationToken);
+
+            return Ok(new Response<Guid>
+            {
+                Data = removed.ProductId,
+                IsError = false,
+                Message = "Item removed from Cart successfully",
+                MessageAr = "تمت إزالة المنتج من قائمة الرغبات بنجاح",
+                Status = (int)StatusCodeEnum.Ok
+            });
         }
     }
 }

@@ -28,14 +28,17 @@ namespace OutbornE_commerce.Controllers
         private readonly IEmailSenderCustom emailSender;
         private readonly FrontBaseUrlSettings FrontBaseUrl;
         private readonly IHostEnvironment Environment;
+        private readonly RoleManager<IdentityRole> _RoleManager;
         private readonly IWebHostEnvironment webHostEnvironment;
 
         public AuthController(IWebHostEnvironment env, UserManager<User> userManager, IAuthService authService,
              SignInManager<User> signInManager,
             IConfiguration _configuration, IEmailSenderCustom emailSender,
-            IOptions<FrontBaseUrlSettings> option, IHostEnvironment _env)
+            IOptions<FrontBaseUrlSettings> option, IHostEnvironment _env, RoleManager<IdentityRole> roleManager)
         {
             Environment = _env;
+            _RoleManager = roleManager;
+            _RoleManager = roleManager;
             _userManager = userManager;
             _authService = authService;
             this.signInManager = signInManager;
@@ -76,6 +79,12 @@ namespace OutbornE_commerce.Controllers
                         IsError = true,
                         Email = userForRegistration.Email,
                     });
+                }
+
+                if (await _RoleManager.RoleExistsAsync("Customer"))
+                {
+                    await _userManager.AddToRoleAsync(user, "Customer");
+
                 }
 
                 var GeneratedToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);

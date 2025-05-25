@@ -4,18 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using OutbornE_commerce.BAL.Dto.OrderDto;
 using OutbornE_commerce.BAL.EmailServices;
+using OutbornE_commerce.BAL.Repositories;
 using OutbornE_commerce.BAL.Repositories.OrderRepo;
-using OutbornE_commerce.BAL.Services.Cart_Service;
 using OutbornE_commerce.BAL.Services.OrderService;
-using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
-using OutbornE_commerce.FilesManager;
 using Stripe;
 
 using Stripe.Checkout;
-using Stripe.Climate;
-using System.Diagnostics;
-using Address = OutbornE_commerce.DAL.Models.Address;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -25,25 +20,26 @@ namespace OutbornE_commerce.Controllers
     {
         private readonly IOrderRepository orderRepository;
         private readonly IOrderService orderService;
+        private readonly IBagItemsRepo _BagItemsRepo;
         private readonly IPaymentWithStripeService paymentWithStripeService;
         private readonly IConfiguration configuration;
-        private readonly ICartService cartService;
         public IHostEnvironment Environment { get; }
         public IWebHostEnvironment webHostEnvironment { get; }
         public IEmailSenderCustom _emailSender { get; }
         private readonly UserManager<User> _userManager;
+
+
         public OrderController(UserManager<User> userManager, IHostEnvironment _env, IWebHostEnvironment env, IEmailSenderCustom emailSender,
-            ICartService cartService,
             IConfiguration configuration, IPaymentWithStripeService paymentWithStripeService,
             IOrderRepository orderRepository,
-            IOrderService orderService)
+            IOrderService orderService,IBagItemsRepo bagItemsRepo)
         {
             this.orderRepository = orderRepository;
             this.orderService = orderService;
+            _BagItemsRepo = bagItemsRepo;
             this.paymentWithStripeService = paymentWithStripeService;
             this.paymentWithStripeService = paymentWithStripeService;
             this.configuration = configuration;
-            this.cartService = cartService;
             Environment = _env;
             webHostEnvironment = env;
             _emailSender = emailSender;
@@ -283,7 +279,7 @@ namespace OutbornE_commerce.Controllers
                                     {
                                         var userId = User.GetUserIdFromToken();
                                         order.OrderStatus = OrderStatus.Refunded;
-                                        await cartService.ClearCartAsync(userId);
+                                        await _BagItemsRepo.ClearCartAsync(userId,cancellationToken);
                                     }
                                     catch (Exception ex)
                                     {

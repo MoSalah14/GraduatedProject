@@ -25,17 +25,17 @@ namespace OutbornE_commerce.Controllers
 
 
         [HttpGet("GetAllProductsForUser")]
-        public async Task<IActionResult> GetAllProductsForUser(int pageNumber = 1, int pageSize = 10, string? searchTerm = null, [FromQuery] SortingCriteria? sortingCriteria = null)
+        public async Task<IActionResult> GetAllProductsForUser(int pageNumber = 1, int pageSize = 10, string? searchTerm = null, [FromQuery] SortingCriteria? sortingCriteria = null, Guid? CategoryId = null)
         {
             try
             {
-                var ProductsResponse = _productRepository.GetAllProductInHomePage(searchTerm, pageNumber, pageSize, sortingCriteria);
+                var ProductsResponse = _productRepository.GetAllProductInHomePage(searchTerm, pageNumber, pageSize, sortingCriteria, CategoryId);
 
                 int TotalProductCount = await ProductsResponse.CountAsync();
 
                 var ProductsWithPagination = await ProductsResponse.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
-                return Ok(new PaginationResponse<List<GetAllProductForUserDto>>
+                return Ok(new PaginationResponse<List<GetAllProductForUserDtoWithCategory>>
                 {
                     Data = ProductsWithPagination,
                     IsError = false,
@@ -322,9 +322,9 @@ namespace OutbornE_commerce.Controllers
         {
             var products = await _productRepository.SearchProducts(model, sortingCriteria);
 
-            var data = products.Data.Adapt<List<GetAllProductForUserDtoًWithCategory>>();
+            var data = products.Data.Adapt<List<GetAllProductForUserDtoWithCategory>>();
 
-            return Ok(new PaginationResponse<List<GetAllProductForUserDtoًWithCategory>>
+            return Ok(new PaginationResponse<List<GetAllProductForUserDtoWithCategory>>
             {
                 Data = data,
                 IsError = false,

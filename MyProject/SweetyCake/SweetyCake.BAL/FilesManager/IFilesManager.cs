@@ -12,7 +12,5 @@ namespace OutbornE_commerce.FilesManager
         bool DeleteFile(string fileUrl);
 
         bool DeleteMultipleFiles(List<string> filesUrl);
-
-        byte[] ExportSalesReportToExcelAsync(List<SalesReportDto> reportData);
     }
 }

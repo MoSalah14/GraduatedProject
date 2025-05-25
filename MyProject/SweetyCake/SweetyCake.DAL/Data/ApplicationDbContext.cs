@@ -23,21 +23,11 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<ContactUs> ContactUs { get; set; }
         public DbSet<BagItem> BagItems { get; set; }
         public DbSet<HomeSection> HomeSections { get; set; }
-
         public DbSet<WishList> WishLists { get; set; }
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Reviews> Reviews { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<DeliveryOrder> DeliveryOrder { get; set; }
-
-        public DbSet<WalletTransaction> WalletTransactions { get; set; }
-        public DbSet<Wallets> Wallets { get; set; }
-        public DbSet<Coupons> Coupons { get; set; }
-
-        public DbSet<UserCoupon> CouponUsers { get; set; }
-
         public DbSet<ProductImage> ProductImage { get; set; }
         public DbSet<ShippingPrice> ShippingPrices { get; set; }
   
@@ -80,22 +70,11 @@ namespace OutbornE_commerce.DAL.Data
           .WithMany(p => p.WishLists)
           .HasForeignKey(w => w.ProductId);
             builder.Entity<WishList>()
-     .HasOne(w => w.UserWishList)
-     .WithMany(p => p.WishLists)
-     .HasForeignKey(w => w.UserId);
+                 .HasOne(w => w.UserWishList)
+                 .WithMany(p => p.WishLists)
+                 .HasForeignKey(w => w.UserId);
 
-            builder.Entity<User>()
-                .HasOne(u => u.Wallet)
-                .WithOne(w => w.User)
-                .HasForeignKey<Wallets>(w => w.UserId);
-
-            builder.Entity<Wallets>()
-                .HasMany(w => w.Transactions)
-                .WithOne(t => t.UserWallet)
-                .HasForeignKey(t => t.UserWalletId);
-
-            builder.Entity<UserCoupon>()
-           .HasKey(cu => new { cu.CouponId, cu.UserId });
+          
 
             builder.Entity<Order>()
             .HasOne(o => o.Delivery)

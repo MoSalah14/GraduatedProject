@@ -2,9 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Products;
-using OutbornE_commerce.BAL.Dto.ProductSizes;
-using OutbornE_commerce.BAL.Dto.Sizes;
-using OutbornE_commerce.BAL.Dto.WishList;
 using OutbornE_commerce.BAL.Extentions;
 using OutbornE_commerce.BAL.Repositories.BaseRepositories;
 using OutbornE_commerce.DAL.Data;
@@ -20,11 +17,34 @@ namespace OutbornE_commerce.BAL.Repositories.Products
         }
 
 
-        public IQueryable<GetAllProductForUserDto> GetAllProductInHomePage(string searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null)
+        public IQueryable<GetAllProductForUserDtoWithCategory> GetAllProductInHomePage(string? searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null, Guid? CategoryId = null)
         {
             // Start the query
 
-            var ProductQuery = _context.Products.Select(p => new GetAllProductForUserDto
+            var ProductQuery = _context.Products.AsQueryable();
+
+            // Apply filtering before projection
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var lowerSearchTerm = searchTerm.ToLower();
+                ProductQuery = ProductQuery.Where(p =>
+                    p.NameEn.ToLower().Contains(lowerSearchTerm) ||
+                    p.NameAr.ToLower().Contains(lowerSearchTerm) ||
+                    p.Price.ToString().Contains(lowerSearchTerm)
+                );
+            }
+
+            if (CategoryId.HasValue)
+            {
+                ProductQuery = ProductQuery.Where(p => p.CategoryId == CategoryId.Value);
+            }
+
+            if (sortingCriteria != null)
+            {
+                ProductQuery = ProductQuery.ApplySorting(sortingCriteria);
+            }
+
+            var result = ProductQuery.Include(e => e.Category).Select(p => new GetAllProductForUserDtoWithCategory
             {
                 Id = p.Id,
                 NameEn = p.NameEn,
@@ -34,22 +54,13 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                 Price = p.Price,
                 DiscountPrice = p.DiscountPrice,
                 RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
+                CategoryID = p.CategoryId,
+                CategoryNameEn = p.Category.NameEn,
+                CategoryNameAr = p.Category.NameAr
             });
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                var lowerSearchTerm = searchTerm.ToLower();
-                ProductQuery = ProductQuery.Where(p =>
-                    p.NameEn.ToLower().Contains(lowerSearchTerm) ||
-                    p.Price.ToString().Contains(lowerSearchTerm)
-                );
-            }
 
-            if (sortingCriteria != null)
-            {
-                ProductQuery = ProductQuery.ApplySorting(sortingCriteria);
-            }
-            return ProductQuery;
+            return result;
         }
 
         public async Task<List<ProductNameIdModel>> GetProductNameAndIdByPaginationAsync(string searchTerm, int pageNumber, int pageSize)
@@ -99,10 +110,10 @@ namespace OutbornE_commerce.BAL.Repositories.Products
             };
         }
 
-        public async Task<PaginationResponse<List<GetAllProductForUserDtoًWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null)
+        public async Task<PaginationResponse<List<GetAllProductForUserDtoWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null)
         {
             var query = _context.Products
-                .Where(e => e.CategoryId == CategoryId).Include(e => e.Category).Select(p => new GetAllProductForUserDtoًWithCategory
+                .Where(e => e.CategoryId == CategoryId).Include(e => e.Category).Select(p => new GetAllProductForUserDtoWithCategory
                 {
                     Id = p.Id,
                     NameEn = p.NameEn,
@@ -124,7 +135,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new PaginationResponse<List<GetAllProductForUserDtoًWithCategory>>
+            return new PaginationResponse<List<GetAllProductForUserDtoWithCategory>>
             {
                 Data = products,
                 TotalCount = totalCount,

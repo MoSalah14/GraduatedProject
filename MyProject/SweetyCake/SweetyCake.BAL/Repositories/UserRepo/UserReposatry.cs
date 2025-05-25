@@ -71,7 +71,6 @@ namespace OutbornE_commerce.BAL.Repositories.UserRepo
             var userIds = userRoleUsers.Select(u => u.Id).ToList();
 
             var query = _context.Users
-                .Include(u => u.Wallet)
                 .Where(u => userIds.Contains(u.Id));
 
             if (!string.IsNullOrEmpty(IteemSearch))
@@ -94,8 +93,7 @@ namespace OutbornE_commerce.BAL.Repositories.UserRepo
                 UserID = u.Id,
                 FullName = u.FullName,
                 Email = u.Email,
-                PhoneNumber = u.PhoneNumber,
-                WalletBalance = u.Wallet != null ? u.Wallet.Balance : 0
+                PhoneNumber = u.PhoneNumber
             });
 
             return new PagainationModel<IEnumerable<UserDisplayDto>>

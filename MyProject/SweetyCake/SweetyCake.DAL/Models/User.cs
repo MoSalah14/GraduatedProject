@@ -24,6 +24,5 @@ namespace OutbornE_commerce.DAL.Models
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<WishList> WishLists { get; set; }
         public virtual ICollection<ContactUs> ContactUs { get; set; }
-        public virtual Wallets Wallet { get; set; }
     }
 }

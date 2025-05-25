@@ -18,13 +18,13 @@ namespace OutbornE_commerce.BAL.Repositories.Products
     public interface IProductRepository : IBaseRepository<Product>
     {
 
-        Task<PaginationResponse<List<GetAllProductForUserDtoًWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria);
+        Task<PaginationResponse<List<GetAllProductForUserDtoWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria);
 
         Task<PagainationModel<List<Product>>> SearchProducts(SearchModelDto model, SortingCriteria? sortingCriteria = null);
 
         Task<List<ProductNameIdModel>> GetProductNameAndIdByPaginationAsync(string searchTerm, int pageNumber, int pageSize);
 
-        IQueryable<GetAllProductForUserDto> GetAllProductInHomePage(string searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null);
+        IQueryable<GetAllProductForUserDtoWithCategory> GetAllProductInHomePage(string? searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null, Guid? CategoryId = null);
         Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(int flashsaleNumber);
         Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync();
 
