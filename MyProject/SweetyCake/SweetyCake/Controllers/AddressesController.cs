@@ -12,15 +12,17 @@ namespace OutbornE_commerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AddressesController : ControllerBase
     {
         private readonly IAddressRepository _addressRepository;
 
-        public AddressesController( IAddressRepository addressRepository)
+        public AddressesController(IAddressRepository addressRepository)
         {
             _addressRepository = addressRepository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAddresses()
         {
@@ -46,6 +48,8 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
+
+        
         [HttpGet("GetAllAddressForUser")]
         public async Task<IActionResult> GetAllAddressesForSpecifecUser()
         {
@@ -109,7 +113,6 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateAddress([FromBody] AddressForCreationDto model, CancellationToken cancellationToken)
         {
@@ -130,7 +133,6 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
-        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateAddress([FromBody] AddressDto model, CancellationToken cancellationToken)
         {

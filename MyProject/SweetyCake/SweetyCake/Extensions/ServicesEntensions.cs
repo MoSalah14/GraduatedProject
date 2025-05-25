@@ -38,9 +38,8 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IFilesManager, OutbornE_commerce.FilesManager.FilesManager>();
+            services.AddScoped<IFilesManager, FilesManager.FilesManager>();
             services.AddScoped<IAddressRepository, AddressRepository>();
-            //services.AddHostedService<DiscountCleanupService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();

@@ -9,9 +9,7 @@ namespace OutbornE_commerce.BAL.Dto.Address
 {
     public class AddressForCreationDto
     {
-        public Guid CountryId { get; set; }
-        public Guid? CityId { get; set; }
-        public Guid? ServiceableAreaId { get; set; }
+        public string Governorate { get; set; }
         public string? Street { get; set; }
         public string? BuildingNumber { get; set; }
         public string? AddressLine { get; set; }

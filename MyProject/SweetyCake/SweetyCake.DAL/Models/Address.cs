@@ -8,7 +8,8 @@ namespace OutbornE_commerce.DAL.Models
 {
     public class Address : BaseEntity
     {
-        public string? Street { get; set; }
+        public string Governorate { get; set; }
+        public string Street { get; set; }
         public string? BuildingNumber { get; set; }
         public string? AddressLine { get; set; }
         public string? LandMark { get; set; }
