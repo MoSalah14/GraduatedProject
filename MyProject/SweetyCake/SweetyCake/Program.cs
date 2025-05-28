@@ -1,7 +1,6 @@
-
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
-<<<<<<< Updated upstream
-=======
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +21,10 @@ using OutbornE_commerce.DAL.Data;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.Extensions;
 using OutbornE_commerce.FilesManager;
->>>>>>> Stashed changes
 using Serilog;
-using SweetyCake.Extensions;
+using StackExchange.Redis;
+using Stripe;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,9 +35,6 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog(); // Use Serilog for logging
 
-<<<<<<< Updated upstream
-builder.Services.ConfigureProjectServices(builder.Configuration);
-=======
 // Add services to the container.
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //	.AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -162,7 +159,6 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
->>>>>>> Stashed changes
 
 var app = builder.Build();
 
@@ -210,11 +206,13 @@ app.UseExceptionHandler(errorApp =>
 app.UseRouting();
 
 app.UseHttpsRedirection();
-
+//}
 app.UseCors("_myAllowSpecificOrigins");
 app.UseStaticFiles();
 
+//app.UseJwtExpirationHandling();
 
+// End Localization
 app.UseAuthentication();
 app.UseAuthorization();
 
