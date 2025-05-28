@@ -1,5 +1,5 @@
-﻿using Mapster;
-using MapsterMapper;
+﻿
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
@@ -7,7 +7,6 @@ using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Categories;
 using OutbornE_commerce.BAL.Repositories.BaseRepositories;
 using OutbornE_commerce.BAL.Repositories.Categories;
-using OutbornE_commerce.DAL.Enums;
 using OutbornE_commerce.DAL.Models;
 using System.Threading;
 

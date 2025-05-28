@@ -37,8 +37,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SweetyCake.BAL\SweetyCake.BAL.csproj" />
     <ProjectReference Include="..\SweetyCake.DAL\SweetyCake.DAL.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\Uploads\" />
+    <ProjectReference Include="..\SweetyCake.Dashborad\SweetyCake.Dashborad.csproj" />
   </ItemGroup>
 </Project>
