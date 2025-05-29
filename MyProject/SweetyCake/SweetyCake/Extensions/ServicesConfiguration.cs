@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -28,7 +31,7 @@ namespace SweetyCake.Extensions
             });
 
             services.AddHttpClient();
-            services.AddControllers();
+            services.AddControllersWithViews();
             services.AddHttpContextAccessor();
 
 
@@ -83,6 +86,11 @@ namespace SweetyCake.Extensions
                             {
                                 options.ClientId = Configuration["ExternalLoginAuth:Google:ClientId"];
                                 options.ClientSecret = Configuration["ExternalLoginAuth:Google:ClientSecret"];
+
+                                // Cookie For Mvc Authrization
+                            }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                            {
+                                options.LoginPath = "/Account/Login"; // مسار صفحة تسجيل الدخول في الداشبورد
                             })
                             // FaceBook Auth
                             .AddFacebook(options =>
@@ -125,8 +133,10 @@ namespace SweetyCake.Extensions
             services.ConfigureLifeTime();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+
         }
+
+
 
 
     }

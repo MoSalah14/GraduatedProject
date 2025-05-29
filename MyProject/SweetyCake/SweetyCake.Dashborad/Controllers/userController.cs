@@ -8,7 +8,7 @@ using OutbornE_commerce.DAL.Models;
 
 namespace SweetyCake.Dashborad.Controllers
 {
-    public class userController : Controller
+    public class userController : DashboardBaseController
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<User> userManager;

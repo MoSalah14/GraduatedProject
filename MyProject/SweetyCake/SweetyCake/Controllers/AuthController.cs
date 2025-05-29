@@ -1,19 +1,23 @@
 ﻿
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using OutbornE_commerce.BAL.AuthServices;
-using OutbornE_commerce.Extensions;
-using System.Security.Claims;
-using System.Text;
-using OutbornE_commerce.BAL.External_Logins;
-using OutbornE_commerce.BAL.EmailServices;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using OutbornE_commerce.BAL.AuthServices;
+using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Extentions;
-using System.Text.RegularExpressions;
+using OutbornE_commerce.BAL.External_Logins;
+using OutbornE_commerce.Extensions;
 using PreMailer.Net;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -334,5 +338,9 @@ namespace OutbornE_commerce.Controllers
                 });
             }
         }
+
+
+
+
     }
 }

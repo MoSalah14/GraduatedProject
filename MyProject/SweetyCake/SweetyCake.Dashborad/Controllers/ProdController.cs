@@ -15,7 +15,7 @@ using OutbornE_commerce.BAL.Repositories.Categories;
 
 namespace SweetyCake.Dashborad.Controllers
 {
-    public class ProdController : Controller
+    public class ProdController : DashboardBaseController
     {
         private readonly IProductRepository _productRepository;
         private readonly IFilesManager _filesManager;
