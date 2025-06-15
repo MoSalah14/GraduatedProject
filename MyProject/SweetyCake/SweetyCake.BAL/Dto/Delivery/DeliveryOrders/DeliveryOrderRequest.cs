@@ -30,9 +30,5 @@
         public Guid ProductSizeID { get; set; }
         public int Quantity { get; set; }
         public string? Name { get; set; }
-        public double Weight { get; set; }
-        public string? skuNumber { get; set; }
-        public string? sku { get; set; } // Item Name
-        public string? weightUnit { get; set; } = "Kg";
     }
 }

@@ -28,7 +28,6 @@ namespace OutbornE_commerce.DAL.Models
         public int QuantityInStock { get; set; }
         public decimal Price { get; set; }
         public decimal DiscountPrice { get; set; }
-
         public bool IsPreOrder { get; set; } = false;
 
         public bool IsActive { get; set; } = true;

@@ -31,18 +31,20 @@ namespace OutbornE_commerce.Controllers
                     Status = (int)StatusCodeEnum.Unauthorized
                 });
 
-            var Cart = await _BagItemsRepo.MapCartDto(userId);
+            var Cart = await _BagItemsRepo.GetUserCartAsync(userId);
 
             if (Cart is null)
-                return Ok(new Response<List<CartItemDto>>
+                return Ok(new Response<DisplayCartItemDto>
                 {
                     IsError = false,
-                    Data = new List<CartItemDto>(),
+                    Data = new DisplayCartItemDto(),
                     Message = "لا توجد قائمة امنيات",
                     MessageAr = "Empty With List",
                     Status = (int)StatusCodeEnum.Ok
                 });
-            return Ok(new Response<List<CartItemDto>>
+
+
+            return Ok(new Response<DisplayCartItemDto>
             {
                 Data = Cart,
                 IsError = false,
@@ -53,7 +55,7 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpPost("AddToCart")]
-        public async Task<IActionResult> AddToCart(Guid ProductId, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddToCart(CreateCartDto cartDto, CancellationToken cancellationToken)
         {
             var userId = User.GetUserIdFromToken();
             if (userId == null)
@@ -69,7 +71,7 @@ namespace OutbornE_commerce.Controllers
             }
 
             var existingCartItem = await _BagItemsRepo
-                .FindByCondition(w => w.UserId == userId && w.ProductId == ProductId);
+                .FindByCondition(w => w.UserId == userId && w.ProductId == cartDto.ProductId);
 
             if (existingCartItem.Any())
             {
@@ -85,9 +87,10 @@ namespace OutbornE_commerce.Controllers
             var UserCart = new BagItem()
             {
                 UserId = userId,
-                ProductId = ProductId,
+                ProductId = cartDto.ProductId,
                 CreatedBy = "Admin",
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.Now,
+                Quantity = cartDto.Quantity,
             };
 
             await _BagItemsRepo.Create(UserCart);

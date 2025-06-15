@@ -120,7 +120,7 @@ namespace OutbornE_commerce.DAL.Data
            .IsRequired();
 
             builder.Entity<OrderItem>()
-              .HasKey(e => new { e.OrderId, e.ProductSizeId });
+              .HasKey(e => new { e.OrderId, e.ProductId });
 
             builder.Entity<OrderItem>()
            .Property(oi => oi.ItemPrice)

@@ -19,27 +19,35 @@ namespace OutbornE_commerce.BAL.Repositories
             await SaveAsync(cancellationToken);
         }
 
-        public async Task<List<CartItemDto>> MapCartDto(string userId)
+        public async Task<DisplayCartItemDto> GetUserCartAsync(string userId)
         {
             string[] includes = new string[] { "Product" };
+            var cartItems = await FindByCondition(x => x.UserId == userId, includes);
 
-            var CartItems = await FindByCondition(x => x.UserId == userId, includes);
-
-            if (CartItems == null || !CartItems.Any())
+            if (cartItems == null || !cartItems.Any())
             {
-                return new List<CartItemDto>();
+                return new DisplayCartItemDto();
             }
 
-            var CartDtos = CartItems.Select(Cart => new CartItemDto
+            var cartDtos = cartItems.Select(item => new CartItemDto
             {
-                ProductId = Cart.ProductId,
-                ProductNameEn = Cart.Product.NameEn,
-                ProductNameAr = Cart.Product.NameAr,
-                ImageUrl = Cart.Product.MainImageUrl,
-                ItemPrice = Cart.Product?.Price
+                ProductId = item.ProductId,
+                ProductNameEn = item.Product.NameEn,
+                ProductNameAr = item.Product.NameAr,
+                ImageUrl = item.Product.MainImageUrl,
+                ItemPrice = item.Product?.Price ?? 0,
+                Quantity = item.Quantity
+
             }).ToList();
 
-            return CartDtos;
+            var totalPrice = cartItems.Sum(x => x.Product.Price * x.Quantity);
+
+            return new DisplayCartItemDto
+            {
+                cartItemDtos = cartDtos,
+                TotalPrice = totalPrice
+            };
         }
+
     }
 }

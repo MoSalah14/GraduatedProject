@@ -10,6 +10,11 @@ using OutbornE_commerce.BAL.Repositories.Address;
 using OutbornE_commerce.BAL.Repositories.ShippingPriceRepo;
 using OutbornE_commerce.FilesManager;
 using Order = OutbornE_commerce.DAL.Models.Order;
+using OutbornE_commerce.DAL.Enums;
+using OutbornE_commerce.BAL.Repositories;
+using OutbornE_commerce.BAL.Dto.Delivery.DeliveryOrders;
+using OutbornE_commerce.BAL.Repositories.Products;
+using OutbornE_commerce.BAL.Dto.Cart;
 
 namespace OutbornE_commerce.BAL.Services.OrderService
 {
@@ -19,203 +24,137 @@ namespace OutbornE_commerce.BAL.Services.OrderService
 
         private readonly IOrderRepository orderRepository;
         private readonly IPaymentWithStripeService paymentWithStripeService;
-        private readonly IBaseRepository<User> baseRepository;
+        private readonly IProductRepository _ProductRepository;
         private readonly IAddressRepository addressRepository;
-        private readonly IShippingPriceRepo _shippingPriceRepo;
-        private readonly IFilesManager _FilesManager;
+        private readonly IBagItemsRepo _BagItemsRepo;
 
         public OrderService(
             IOrderRepository orderRepository,
-            IPaymentWithStripeService paymentWithStripeService,
-            IBaseRepository<User> baseRepository,
-            IAddressRepository addressRepository, IShippingPriceRepo shippingPriceRepo,
-            IFilesManager filesManager)
+            IPaymentWithStripeService paymentWithStripeService, IProductRepository productRepository,
+            IAddressRepository addressRepository,IBagItemsRepo bagItemsRepo)
         {
             this.orderRepository = orderRepository;
             this.paymentWithStripeService = paymentWithStripeService;
-            this.baseRepository = baseRepository;
+            _ProductRepository = productRepository;
             this.addressRepository = addressRepository;
-            _shippingPriceRepo = shippingPriceRepo;
-            _FilesManager = filesManager;
+            _BagItemsRepo = bagItemsRepo;
         }
 
         #endregion Ctor
 
         public async Task<Response<string>> CreateOrderAsync(CreateOrderDto model, string userId, CancellationToken cancellationToken)
         {
+            var userCart = await _BagItemsRepo.GetUserCartAsync(userId);
+            await orderRepository.BeginTransactionAsync();
 
-            return null;
-            //var userCart = await cartService.GetUserCartAsync(userId);
-            //await orderRepository.BeginTransactionAsync();
+            try
+            {
+                var order = InitializeOrder(model, userId);
+                long totalAmount = 0;
+                decimal TotalProductWeight = 0;
+                var productItemsForDelivery = new List<ProductItem>();
 
-            //try
-            //{
-            //    var order = InitializeOrder(model, userId);
-            //    long totalAmount = 0;
-            //    decimal TotalProductWeight = 0;
-            //    var productItemsForDelivery = new List<ProductItem>();
+                foreach (var item in userCart.cartItemDtos)
+                {
+                    var existingProduct = await _ProductRepository.Find(i => i.Id == item.ProductId && i.QuantityInStock > 0, true, new string[] { "BagItem" });
 
-            //    foreach (var item in userCart.Items)
-            //    {
-            //        var existingProduct = await productSizeRepository.Find(i => i.Id == item.ProductSizeId && i.Quantity > 0, false, new string[] { "ProductColor.Product" });
-            //        if (existingProduct != null && existingProduct.Quantity >= item.Quantity)
-            //        {
-            //            var orderItem = AddOrderItem(item, existingProduct, ref totalAmount);
-            //            order.OrderItems.Add(orderItem);
+                    if (existingProduct != null && existingProduct.QuantityInStock >= item.Quantity)
+                    {
+                        var orderItem = AddOrderItem(item, existingProduct, ref totalAmount);
+                        order.OrderItems.Add(orderItem);
 
-            //            TotalProductWeight += existingProduct.ProductWeight;
 
-            //            productItemsForDelivery.Add(new ProductItem
-            //            {
-            //                Quantity = item.Quantity,
-            //                Name = existingProduct.ProductColor.Product.NameEn,
-            //                Weight = (double)existingProduct.ProductWeight,
-            //                skuNumber = existingProduct.SKU_Size,
-            //            });
+                        productItemsForDelivery.Add(new ProductItem
+                        {
+                            Quantity = item.Quantity,
+                            Name = existingProduct.NameEn,
+                        });
 
-            //            existingProduct.Quantity -= item.Quantity;
-            //            productSizeRepository.Update(existingProduct);
-            //        }
-            //        else
-            //        {
-            //            return new Response<string>
-            //            {
-            //                Message = "Check Your Cart, Some Products Are Out of Stock",
-            //                IsError = true,
-            //                MessageAr = "افحص العربه الخاصه بك هناك منتجانت غير موجوده",
-            //                Status = (int)StatusCodeEnum.BadRequest
-            //            };
-            //        }
-            //    }
+                        existingProduct.QuantityInStock -= item.Quantity;
+                        //_ProductRepository.Update(existingProduct);
+                    }
+                    else
+                    {
+                        return new Response<string>
+                        {
+                            Message = "Check Your Cart, Some Products Are Out of Stock",
+                            IsError = true,
+                            MessageAr = "افحص العربه الخاصه بك هناك منتجانت غير موجوده",
+                            Status = (int)StatusCodeEnum.BadRequest
+                        };
+                    }
+                }
 
-            //    // Validate coupon if provided
-            //    if (!string.IsNullOrEmpty(model.CouponCode))
-            //    {
-            //        var couponDiscountAmount = await couponService.ApplyCouponAsync(model.CouponCode, userId, totalAmount);
+                if (model.address != null)
+                {
+                    order.Address = await InitializeAddress(model.address, userId, cancellationToken);
+                    order.AddressId = order.Address.Id;
+                }
 
-            //        // Apply discount to total amount
-            //        totalAmount = (long)couponDiscountAmount;
-            //    }
+               // Allow Tracking For Order
+                await orderRepository.Create(order);
+                string sessionUrl = string.Empty;
+                if (model.PaymentMethod == PaymentMethod.Strip)
+                {
+                    var sessionResponse = await paymentWithStripeService.CreateCheckoutSession(userId, totalAmount, (long)order.ShippingPrice, "CardPayments", order.Id);
+                    sessionResponse.OrderId = order.Id;
+                    sessionUrl = sessionResponse.SessionUrl;
+                    order.SessionId = sessionResponse.SessionId;
+                }
 
-            //    if (model.address != null)
-            //    {
-            //        order.Address = await InitializeAddress(model.address, userId, cancellationToken);
-            //        order.AddressId = order.Address.Id;
-            //    }
+                await orderRepository.SaveAsync(cancellationToken);
+                await orderRepository.CommitTransactionAsync();
 
-            //    #region ShippingPrice
-
-            //    var getUserAdressCountry = await addressRepository.Find(e => e.Id == order.AddressId && e.UserId == userId);
-
-            //    var IsUAEaddress = await countryRepository.IsUAECountry(getUserAdressCountry!.CountryId);
-            //    if (IsUAEaddress)
-            //    {
-            //        if (model.IsOrderExpress)
-            //            order.ShippingPrice = 35;
-            //        else
-            //        {
-            //            // Check For Free Delivery
-            //            var GetFreeDeliveryPrice = await freeDeliveryRepo.GetFreeDelivery(getUserAdressCountry.CountryId);
-            //            if (GetFreeDeliveryPrice != null && totalAmount >= GetFreeDeliveryPrice)
-            //            {
-            //                order.ShippingPrice = 0;
-            //            }
-            //            else
-            //            {
-            //                order.ShippingPrice = 20;
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // Get Shipping Price
-            //        order.ShippingPrice = await _shippingPriceRepo.GetShippingPriceBasedOnWeightAndCountryId(getUserAdressCountry!.CountryId, (double)TotalProductWeight);
-            //    }
-
-            //    #endregion ShippingPrice
-
-            //    // Allow Tracking For Order
-            //    await orderRepository.Create(order);
-            //    string sessionUrl = string.Empty;
-            //    if (model.PaymentMethod == PaymentMethod.Strip)
-            //    {
-            //        var sessionResponse = await paymentWithStripeService.CreateCheckoutSession(userId, totalAmount, (long)order.ShippingPrice, "CardPayments", order.Id);
-            //        sessionResponse.OrderId = order.Id;
-            //        sessionUrl = sessionResponse.SessionUrl;
-            //        order.SessionId = sessionResponse.SessionId;
-            //    }
-            //    else
-            //    {
-            //        if (model.PaymentMethod == PaymentMethod.Wallet)
-            //        {
-            //            var GetUsdValue = await currencyRepository.GetAEDValue();
-            //            var ShippingPriceWithUsd = order.ShippingPrice / GetUsdValue;
-            //            await walletService.PayWithWalletAsync(userId, totalAmount + ShippingPriceWithUsd, cancellationToken);
-            //        }
-            //        var DeliveryObject = new DeliveryObject
-            //        {
-            //            AddressID = order.AddressId,
-            //            UserID = order.UserId,
-            //            OrderNumber = order.OrderNumber,
-            //            TotalAmount = totalAmount + order.ShippingPrice,
-            //            ProductItems = productItemsForDelivery
-            //        };
-
-            //        await deliveryService.CreateDeliveryOrderAsync(DeliveryObject, order.Id, false, model.IsOrderExpress);
-            //    }
-
-            //    await orderRepository.SaveAsync(cancellationToken);
-            //    await orderRepository.CommitTransactionAsync();
-
-            //    return new Response<string>
-            //    {
-            //        Data = !string.IsNullOrEmpty(sessionUrl) ? sessionUrl : order.Id.ToString(),
-            //        IsError = false,
-            //        Status = (int)StatusCodeEnum.Ok,
-            //        Message = "Created Successfully",
-            //        MessageAr = "تم انشاء اوردر بنجاح"
-            //    };
-            //}
-            //catch (Exception ex)
-            //{
-            //    await orderRepository.RollbackTransactionAsync();
-            //    return new Response<string>
-            //    {
-            //        Message = "An error occurred while creating the order.",
-            //        IsError = true,
-            //        MessageAr = ex.Message,
-            //        Status = (int)StatusCodeEnum.BadRequest
-            //    };
-            //}
+                return new Response<string>
+                {
+                    Data = !string.IsNullOrEmpty(sessionUrl) ? sessionUrl : order.Id.ToString(),
+                    IsError = false,
+                    Status = (int)StatusCodeEnum.Ok,
+                    Message = "Created Successfully",
+                    MessageAr = "تم انشاء اوردر بنجاح"
+                };
+            }
+            catch (Exception ex)
+            {
+                await orderRepository.RollbackTransactionAsync();
+                return new Response<string>
+                {
+                    Message = "An error occurred while creating the order.",
+                    IsError = true,
+                    MessageAr = ex.Message,
+                    Status = (int)StatusCodeEnum.BadRequest
+                };
+            }
         }
 
         private Order InitializeOrder(CreateOrderDto model, string userId)
         {
             var order = model.Adapt<Order>();
+
+            order.OrderItems = new List<OrderItem>();
+
             order.CreatedBy = "admin";
             order.CreatedOn = DateTime.Now;
             order.OrderNumber = orderRepository.GenerateOrderNumber();
             order.UserId = userId;
-            order.OrderItems = new List<OrderItem>();
+
             return order;
         }
 
-        //private OrderItem AddOrderItem(CartItemDto item, ProductSize existingProduct, ref long totalAmount)
-        //{
-        //    var orderItem = item.Adapt<OrderItem>();
-        //    if (existingProduct.DiscountedPrice > 0)
-        //    {
-        //        orderItem.ItemPrice = existingProduct.DiscountedPrice;
-        //        totalAmount += (long)(existingProduct.DiscountedPrice * item.Quantity);
-        //    }
-        //    else
-        //    {
-        //        orderItem.ItemPrice = existingProduct.Price;
-        //        totalAmount += (long)(existingProduct.Price * item.Quantity);
-        //    }
 
-        //    return orderItem;
-        //}
+        private OrderItem AddOrderItem(CartItemDto item, Product existingProduct, ref long totalAmount)
+        {
+            var orderItem = new OrderItem
+            {
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+                ItemPrice = existingProduct.Price
+            };
+
+            totalAmount += (long)(existingProduct.Price * item.Quantity);
+            return orderItem;
+        }
+
 
         private async Task<Address> InitializeAddress(AddressForCreationDto addressDto, string userID, CancellationToken cancellationToken)
         {

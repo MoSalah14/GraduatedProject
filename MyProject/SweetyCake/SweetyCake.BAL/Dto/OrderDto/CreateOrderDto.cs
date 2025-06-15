@@ -13,10 +13,5 @@ namespace OutbornE_commerce.BAL.Dto.OrderDto
         public PaymentMethod PaymentMethod { get; set; }
         public Guid? AddressId { get; set; }
         public AddressForCreationDto? address { get; set; }
-        public bool IsReverse { get; set; } = false;
-        public decimal ShippingPrice { get; set; }
-
-        public bool IsOrderExpress { get; set; } = false;
-        public string? CouponCode { get; set; }
     }
 }

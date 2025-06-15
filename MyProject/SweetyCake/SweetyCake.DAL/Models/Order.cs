@@ -17,10 +17,10 @@ namespace OutbornE_commerce.DAL.Models
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.UnPaid;
         public ShippedStatus ShippedStatus { get; set; } = ShippedStatus.Processing;
-        public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.CashOnDelivery;
+        public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.Strip;
         public string? SessionId { get; set; }
 
-        public decimal ShippingPrice { get; set; }
+        public decimal ShippingPrice { get; set; } = 50;
 
         public DeliveryOrder Delivery { get; set; }
 

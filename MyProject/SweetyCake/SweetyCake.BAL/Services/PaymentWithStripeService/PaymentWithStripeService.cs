@@ -91,7 +91,7 @@ namespace Infrastructure.Services.PaymentWithStripeService
                     {
                         Name = "Delivery Charge",
                     },
-                    UnitAmount = productPrice * 100,
+                    UnitAmount = deliveryPrice * 100,
                 },
                 Quantity = 1,
             },

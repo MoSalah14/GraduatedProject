@@ -9,5 +9,6 @@ namespace OutbornE_commerce.BAL.Dto.Cart
     public class CreateCartDto
     {
         public Guid ProductId { get; set; }
+        public int Quantity { get; set; }
     }
 }
