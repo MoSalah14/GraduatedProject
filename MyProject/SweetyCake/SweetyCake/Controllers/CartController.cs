@@ -106,6 +106,44 @@ namespace OutbornE_commerce.Controllers
             });
         }
 
+        [HttpPost("UpdateCart")]
+        public async Task<IActionResult> UpdateCart(CreateCartDto cartDto, CancellationToken cancellationToken)
+        {
+            var userId = User.GetUserIdFromToken();
+            if (userId == null)
+            {
+                return Unauthorized(new Response<string>
+                {
+                    Data = null,
+                    IsError = true,
+                    Message = "Please Login First",
+                    MessageAr = "برجاء تسجيل الدخول اولا",
+                    Status = (int)StatusCodeEnum.Unauthorized
+                });
+            }
+
+            var existingCartItem = await _BagItemsRepo
+                .Find(w => w.UserId == userId && w.ProductId == cartDto.ProductId);
+
+            existingCartItem.UpdatedOn = DateTime.Now;
+            existingCartItem.Quantity = cartDto.Quantity;
+
+            _BagItemsRepo.Update(existingCartItem);
+            await _BagItemsRepo.SaveAsync(cancellationToken);
+
+            return Ok(new Response<Guid>
+            {
+                Data = existingCartItem.ProductId,
+                IsError = false,
+                Message = "Cart updated successfully",
+                MessageAr = "تم تحديث قائمة الرغبات بنجاح",
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+
+
+
+
         [HttpDelete("ClearCart")]
         public async Task<IActionResult> ClearCart(CancellationToken cancellationToken)
         {
