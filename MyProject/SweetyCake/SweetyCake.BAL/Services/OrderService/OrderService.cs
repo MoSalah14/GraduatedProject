@@ -51,7 +51,6 @@ namespace OutbornE_commerce.BAL.Services.OrderService
             {
                 var order = InitializeOrder(model, userId);
                 long totalAmount = 0;
-                decimal TotalProductWeight = 0;
                 var productItemsForDelivery = new List<ProductItem>();
 
                 foreach (var item in userCart.cartItemDtos)

@@ -27,14 +27,12 @@ namespace Infrastructure.Services.PaymentWithStripeService
         private readonly IConfiguration configuration;
         private readonly UserManager<User> _userManager;
         protected readonly ApplicationDbContext _context;
-        private readonly IOrderRepository orderRepository;
         private readonly FrontBaseUrlSettings FrontBaseUrl;
         private readonly IHostEnvironment env;
         private readonly StripeSettings _stripeSettings;
 
         public PaymentWithStripeService(IConfiguration configuration, UserManager<User> userManager,
             IOptions<StripeSettings> stripeSettings, ApplicationDbContext context,
-            IOrderRepository orderRepository,
             IOptions<FrontBaseUrlSettings> option, IHostEnvironment _env)
         {
             this.configuration = configuration;
@@ -42,7 +40,6 @@ namespace Infrastructure.Services.PaymentWithStripeService
             _stripeSettings = stripeSettings.Value;
             StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
             _context = context;
-            this.orderRepository = orderRepository;
             FrontBaseUrl = option.Value;
             env = _env;
         }
