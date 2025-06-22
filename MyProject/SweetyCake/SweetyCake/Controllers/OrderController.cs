@@ -43,25 +43,10 @@ namespace OutbornE_commerce.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("filtered")]
-        public async Task<IActionResult> GetFilteredOrders([FromBody] GetFillteringorders? filter, int pageNumber = 1, int pageSize = 10)
-        {
-            try
-            {
-                var orders = await orderRepository.GetFilteredOrdersAsync(filter, pageNumber, pageSize);
-                return Ok(orders);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message });
-            }
-        }
-
         [HttpGet("GetAllOrders")]
         public async Task<IActionResult> GetAllOrders(int pageNumber = 1, int pageSize = 10, string? searchTerm = null)
         {
-            //string[] includes = new string[] { "OrderItems", "OrderItems.ProductSize" };
-            string[] includes = new string[] { "OrderItems.ProductSize.Size", "OrderItems.ProductSize.ProductColor.Color", "OrderItems.ProductSize.ProductColor.ProductColorImages", "OrderItems.ProductSize.ProductColor.Product" };
+            string[] includes = new string[] { "OrderItems.Product" };
 
             try
             {
@@ -99,10 +84,7 @@ namespace OutbornE_commerce.Controllers
         public async Task<IActionResult> GetAllUserOrders(int pageNumber = 1, int pageSize = 3, string? DateRange = "last30days")
         {
             string[] includes =
-                new string[] { "OrderItems.ProductSize.Size",
-                     "OrderItems.ProductSize.ProductColor.Color",
-                     "OrderItems.ProductSize.ProductColor.ProductColorImages",
-                     "OrderItems.ProductSize.ProductColor.Product" };
+                new string[] { "OrderItems.Product" };
 
             var userID = User.GetUserIdFromToken();
             if (userID == null)
@@ -157,6 +139,7 @@ namespace OutbornE_commerce.Controllers
             }
         }
 
+
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderDto model, CancellationToken cancellationToken)
         {
@@ -188,6 +171,109 @@ namespace OutbornE_commerce.Controllers
 
             }
         }
+
+
+        [HttpGet("GetOrderByID/{id}")]
+        public async Task<IActionResult> GetOrderById(Guid id)
+        {
+            string[] includes = new string[] { "OrderItems.Product" };
+
+            var order = await orderRepository.Find(i => i.Id == id, false, includes);
+            if (order == null)
+            {
+                return BadRequest(new Response<OrderDto>
+                {
+                    Data = null,
+                    Message = "Invalid Order Id",
+
+                    MessageAr = "لم يتم العثور عن اوردر",
+                    IsError = true,
+                    Status = (int)StatusCodeEnum.NotFound
+                });
+            }
+
+            var data = order.Adapt<OrderDto>();
+            if (order.PaymentStatus != PaymentStatus.UnPaid && order.PaymentMethod != DAL.Enums.PaymentMethod.Strip)
+            {
+                data.TrackingUrl = order.Delivery.TrackingUrl;
+            }
+            return Ok(new Response<OrderDto>
+            {
+                Data = data,
+                IsError = false,
+
+                Status = (int)StatusCodeEnum.Ok
+            });
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var order = await orderRepository.Find(
+                    c => c.Id == id,
+                    false,
+                    new string[] { "OrderItems", "Delivery" }
+                );
+
+                if (order == null)
+                {
+                    return Ok(new Response<string>
+                    {
+                        Data = null,
+                        IsError = true,
+                        Message = $"Order with Id: {id} doesn't exist in the database",
+                        MessageAr = "لم يتم العثور على الطلب",
+                        Status = (int)StatusCodeEnum.NotFound,
+                    });
+                }
+
+                var hasOrderItems = order.OrderItems != null && order.OrderItems.Any();
+                var hasDelivery = order.Delivery != null;
+
+                if (hasOrderItems || hasDelivery)
+                {
+                    return Ok(new Response<Guid>
+                    {
+                        Data = id,
+                        Message = "The Order cannot be deleted because it is connected to other data.",
+                        MessageAr = "لا يمكن حذف الطلب لأنه مرتبط ببيانات أخرى.",
+                        IsError = true,
+                        Status = (int)StatusCodeEnum.BadRequest
+                    });
+                }
+
+                order.IsDeleted = true;
+                // order.OrderStatus = OrderStatus.CANCELLED;
+
+                orderRepository.Update(order);
+
+                await orderRepository.SaveAsync(cancellationToken);
+
+                return Ok(new Response<string>
+                {
+                    Data = null,
+                    IsError = false,
+                    Message = $"Order with Id: {id} has been successfully soft deleted.",
+                    MessageAr = "تم حذف الطلب بنجاح",
+                    Status = (int)StatusCodeEnum.Ok,
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)StatusCodeEnum.ServerError, new Response<string>
+                {
+                    Data = null,
+                    Message = "An error occurred while soft deleting the order",
+                    MessageAr = "حدث خطأ أثناء حذف الطلب",
+                    IsError = true,
+                    Status = (int)StatusCodeEnum.ServerError
+                });
+            }
+        }
+
 
         [HttpPost("ReceiveWebhook")]
         public async Task<IActionResult> StripeWebhook(CancellationToken cancellationToken)
@@ -256,162 +342,5 @@ namespace OutbornE_commerce.Controllers
         }
 
 
-
-
-
-
-
-        [HttpGet("GetOrderByID/{id}")]
-        public async Task<IActionResult> GetOrderById(Guid id)
-        {
-            string[] includes = new string[] { "OrderItems.ProductSize.Size", "OrderItems.ProductSize.ProductColor.Color", "OrderItems.ProductSize.ProductColor.ProductColorImages", "OrderItems.ProductSize.ProductColor.Product", "Delivery" };
-
-            var order = await orderRepository.Find(i => i.Id == id, false, includes);
-            if (order == null)
-            {
-                return BadRequest(new Response<OrderDto>
-                {
-                    Data = null,
-                    Message = "Invalid Order Id",
-
-                    MessageAr = "لم يتم العثور عن اوردر",
-                    IsError = true,
-                    Status = (int)StatusCodeEnum.NotFound
-                });
-            }
-
-            var data = order.Adapt<OrderDto>();
-            if (order.PaymentStatus != PaymentStatus.UnPaid && order.PaymentMethod != DAL.Enums.PaymentMethod.Strip)
-            {
-                data.TrackingUrl = order.Delivery.TrackingUrl;
-            }
-            return Ok(new Response<OrderDto>
-            {
-                Data = data,
-                IsError = false,
-
-                Status = (int)StatusCodeEnum.Ok
-            });
-        }
-
-        //[HttpPut("DeliverdOrder{id}")]
-        //public async Task<IActionResult> StatusOrder(Guid id, CancellationToken cancellationToken)
-        //{
-        //    var order = await orderRepository.Find(i => i.Id == id, false, null);
-        //    if (order == null)
-        //    {
-        //        return BadRequest(new Response<OrderDto>
-        //        {
-        //            Data = null,
-        //            Message = "Invalid Order Id",
-        //            IsError = true,
-        //            Status = (int)StatusCodeEnum.NotFound
-        //        });
-        //    }
-
-        //    order.OrderStatus = OrderStatus.Confirmed;
-        //    orderRepository.Update(order);
-        //    await orderRepository.SaveAsync(cancellationToken);
-        //    return Ok(new Response<Guid>
-        //    {
-        //        Data = order.Id,
-        //        Message = "تم وصول الاوردر",
-        //        IsError = false,
-        //        Status = (int)StatusCodeEnum.Ok
-        //    });
-        //}
-
-        //[HttpPost("RefundPayment")]
-        //public async Task<IActionResult> RefundPayment([FromBody] string sessionId)
-        //{
-        //    try
-        //    {
-        //        var refund = await paymentWithStripeService.RefundCheckoutSessionAsync(sessionId);
-
-        //        return Ok(new Response<Refund>
-        //        {
-        //            Data = refund,
-        //            IsError = false,
-        //            Message = "Payment refunded successfully",
-        //            Status = (int)StatusCodeEnum.Ok
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new Response<string>
-        //        {
-        //            IsError = true,
-        //            Message = "Failed to refund payment: " + ex.Message,
-        //            Status = (int)StatusCodeEnum.BadRequest
-        //        });
-        //    }
-        //}
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var order = await orderRepository.Find(
-                    c => c.Id == id,
-                    false,
-                    new string[] { "OrderItems", "Delivery" }
-                );
-
-                if (order == null)
-                {
-                    return Ok(new Response<string>
-                    {
-                        Data = null,
-                        IsError = true,
-                        Message = $"Order with Id: {id} doesn't exist in the database",
-                        MessageAr = "لم يتم العثور على الطلب",
-                        Status = (int)StatusCodeEnum.NotFound,
-                    });
-                }
-
-                var hasOrderItems = order.OrderItems != null && order.OrderItems.Any();
-                var hasDelivery = order.Delivery != null;
-
-                if (hasOrderItems || hasDelivery)
-                {
-                    return Ok(new Response<Guid>
-                    {
-                        Data = id,
-                        Message = "The Order cannot be deleted because it is connected to other data.",
-                        MessageAr = "لا يمكن حذف الطلب لأنه مرتبط ببيانات أخرى.",
-                        IsError = true,
-                        Status = (int)StatusCodeEnum.BadRequest
-                    });
-                }
-
-                order.IsDeleted = true;
-                // order.OrderStatus = OrderStatus.CANCELLED;
-
-                orderRepository.Update(order);
-
-                await orderRepository.SaveAsync(cancellationToken);
-
-                return Ok(new Response<string>
-                {
-                    Data = null,
-                    IsError = false,
-                    Message = $"Order with Id: {id} has been successfully soft deleted.",
-                    MessageAr = "تم حذف الطلب بنجاح",
-                    Status = (int)StatusCodeEnum.Ok,
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)StatusCodeEnum.ServerError, new Response<string>
-                {
-                    Data = null,
-                    Message = "An error occurred while soft deleting the order",
-                    MessageAr = "حدث خطأ أثناء حذف الطلب",
-                    IsError = true,
-                    Status = (int)StatusCodeEnum.ServerError
-                });
-            }
-        }
     }
 }

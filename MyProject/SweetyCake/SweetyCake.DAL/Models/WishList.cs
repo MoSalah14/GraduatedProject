@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OutbornE_commerce.DAL.Models
 {
-    public class WishList 
+    public class WishList
     {
         public string UserId { get; set; }
         public User? UserWishList { get; set; }

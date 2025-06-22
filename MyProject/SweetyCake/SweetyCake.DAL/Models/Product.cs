@@ -41,5 +41,7 @@ namespace OutbornE_commerce.DAL.Models
 
         public virtual ICollection<WishList> WishLists { get; set; } = new List<WishList>();
         public virtual ICollection<ProductImage> ProductImage { get; set; } = new List<ProductImage>();
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
+
     }
 }

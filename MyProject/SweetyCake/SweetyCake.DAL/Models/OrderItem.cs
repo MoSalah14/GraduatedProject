@@ -10,6 +10,7 @@ namespace OutbornE_commerce.DAL.Models
     {
         public Guid OrderId { get; set; }
         public Guid ProductId { get; set; }
+        public virtual Product Product { get; set; }
         public int Quantity { get; set; }
         public decimal ItemPrice { get; set; }
         public double ProductWeight { get; set; }
