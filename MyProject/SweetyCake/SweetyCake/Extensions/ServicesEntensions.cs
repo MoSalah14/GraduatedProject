@@ -14,6 +14,7 @@ using OutbornE_commerce.BAL.Repositories.Products;
 using OutbornE_commerce.BAL.Repositories.ShippingPriceRepo;
 using OutbornE_commerce.BAL.Repositories.UserRepo;
 using OutbornE_commerce.BAL.Repositories.UserReviews;
+using OutbornE_commerce.BAL.Repositories.WishList;
 using OutbornE_commerce.BAL.Services.OrderService;
 using OutbornE_commerce.BAL.Services.ReviewService;
 using OutbornE_commerce.FilesManager;
@@ -45,6 +46,7 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IShippingPriceRepo, ShippingPriceRepo>();
             services.AddScoped<IHomeSectionRepository, HomeSectionRepository>();
             services.AddScoped<IBagItemsRepo, BagItemsRepo>();
+            services.AddScoped<IWishListRepo, WishListRepo>();
 
             MapProfile.RegisterMappings();
         }

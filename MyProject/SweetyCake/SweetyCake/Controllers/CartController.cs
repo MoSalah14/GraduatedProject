@@ -125,6 +125,17 @@ namespace OutbornE_commerce.Controllers
             var existingCartItem = await _BagItemsRepo
                 .Find(w => w.UserId == userId && w.ProductId == cartDto.ProductId);
 
+            if (existingCartItem == null)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Item not found in the bag",
+                    MessageAr = "العنصر غير موجود في السلة",
+                    IsError = true,
+                    Status = (int)StatusCodeEnum.BadRequest
+                });
+
+
+
             existingCartItem.UpdatedOn = DateTime.Now;
             existingCartItem.Quantity = cartDto.Quantity;
 

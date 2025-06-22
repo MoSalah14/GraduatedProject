@@ -13,7 +13,7 @@ namespace OutbornE_commerce.BAL.Repositories.WishList
 
         public async Task<List<WishListsItemDto>> MapWishListDto(string userId)
         {
-            string[] includes = new string[] { "Product" };
+            string[] includes = new string[] { "ProductWishList" };
 
             var wishListItems = await FindByCondition(x => x.UserId == userId, includes);
 

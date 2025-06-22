@@ -21,7 +21,6 @@ namespace OutbornE_commerce.Controllers
         private readonly IOrderRepository orderRepository;
         private readonly IOrderService orderService;
         private readonly IBagItemsRepo _BagItemsRepo;
-        private readonly IPaymentWithStripeService paymentWithStripeService;
         private readonly IConfiguration configuration;
         public IHostEnvironment Environment { get; }
         public IWebHostEnvironment webHostEnvironment { get; }
@@ -30,15 +29,13 @@ namespace OutbornE_commerce.Controllers
 
 
         public OrderController(UserManager<User> userManager, IHostEnvironment _env, IWebHostEnvironment env, IEmailSenderCustom emailSender,
-            IConfiguration configuration, IPaymentWithStripeService paymentWithStripeService,
+            IConfiguration configuration,
             IOrderRepository orderRepository,
-            IOrderService orderService,IBagItemsRepo bagItemsRepo)
+            IOrderService orderService, IBagItemsRepo bagItemsRepo)
         {
             this.orderRepository = orderRepository;
             this.orderService = orderService;
             _BagItemsRepo = bagItemsRepo;
-            this.paymentWithStripeService = paymentWithStripeService;
-            this.paymentWithStripeService = paymentWithStripeService;
             this.configuration = configuration;
             Environment = _env;
             webHostEnvironment = env;
@@ -186,7 +183,7 @@ namespace OutbornE_commerce.Controllers
                 return BadRequest(response);
             else
             {
-                
+
                 return Ok(response);
 
             }
@@ -195,84 +192,74 @@ namespace OutbornE_commerce.Controllers
         [HttpPost("ReceiveWebhook")]
         public async Task<IActionResult> StripeWebhook(CancellationToken cancellationToken)
         {
-            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            var stripeSignature = Request.Headers["Stripe-Signature"].ToString();
+            string json;
+            string stripeSignature;
 
             try
             {
-                var confirmOrder = new ConfirmOrderRequstDto();
+                using (var reader = new StreamReader(HttpContext.Request.Body))
+                {
+                    json = await reader.ReadToEndAsync();
+                }
+
+                stripeSignature = Request.Headers["Stripe-Signature"];
+                if (string.IsNullOrEmpty(stripeSignature))
+                    return BadRequest(new { error = "Missing Stripe-Signature header." });
+
+
                 var stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, configuration["Stripe:WebhookSecret"]);
 
-                if (stripeEvent.Type == EventTypes.CheckoutSessionCompleted)
-                {
-                    var session = stripeEvent.Data.Object as Session;
-
-                    string userId = string.Empty;
-                    if (session.Status == "complete")
-                    {
-                        session.Metadata.TryGetValue("paymentType", out var paymentType);
-                        session.Metadata.TryGetValue("UserId", out userId);
-                       
-                    }
-                    var user = await _userManager.FindByIdAsync(userId.ToString());
-
-                    var templatePath = Path.Combine(webHostEnvironment.WebRootPath, "Templates", "ConfirmOrder.html");
-
-                    if (!System.IO.File.Exists(templatePath))
-                    {
-                        return NotFound("Email template not found.");
-                    }
-
-                    var emailContent = System.IO.File.ReadAllText(templatePath);
-
-                    if (!string.IsNullOrEmpty(emailContent))
-                    {
-                        emailContent = emailContent
-                            .Replace("{{FullName}}", confirmOrder.FullName)
-                            .Replace("{{OrderNumber}}", confirmOrder.OrderNumber)
-                            .Replace("{{ShippingPrice}}", confirmOrder.ShippingPrice.ToString("F2"))
-                            .Replace("{{TotalAmount}}", confirmOrder.TotalAmount.ToString("F2"))
-                            .Replace("{{Address.Street}}", confirmOrder.Address.Street)
-                            .Replace("{{Address.BuildingNumber}}", confirmOrder.Address.BuildingNumber)
-                            .Replace("{{Address.AddressLine}}", confirmOrder.Address.AddressLine)
-                            .Replace("{{Address.LandMark}}", confirmOrder.Address.LandMark);
-
-                        // Replacing Order Items dynamically
-                        string orderItemsHtml = "";
-                        foreach (var item in confirmOrder.OrderItems)
-                        {
-                            orderItemsHtml += $@"
-                            <div class='summary-item'>
-                                <img src='{item.ImageUrl}' alt='{item.ProductNameAr}'>
-                                <div class='summary-item-info'>
-                                    <h3>{item.ProductNameAr}</h3>
-                                    <p>{item.ColorNameAr} × {item.Quantity}</p>
-                                </div>
-                                <div class='summary-item-price'>AED {item.ItemPrice:F2}</div>
-                            </div>";
-                        }
-
-                        emailContent = emailContent.Replace("{{OrderItems}}", orderItemsHtml);
-                    }
-
-                    await _emailSender.SendEmailAsync(user.Email, "Confirm Order", emailContent);
+                if (stripeEvent == null)
+                    return BadRequest(new { error = "Invalid Stripe event." });
 
 
-                }
+                if (stripeEvent.Type != EventTypes.CheckoutSessionCompleted)
+                    return BadRequest(new { error = "Unhandled event type." });
+
+
+                var session = stripeEvent.Data.Object as Session;
+                if (session == null)
+                    return BadRequest(new { error = "Invalid session object." });
+
+
+                if (session.Status != "complete")
+                    return BadRequest(new { error = "Session is not complete." });
+
+
+                if (!session.Metadata.TryGetValue("UserId", out var userId) || string.IsNullOrWhiteSpace(userId))
+                    return BadRequest(new { error = "UserId is missing in session metadata." });
+
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                    return NotFound(new { error = "User not found." });
+
+
+                await _BagItemsRepo.ClearCartAsync(userId, cancellationToken);
 
                 return Ok(new Response<string>
                 {
                     Data = null,
                     IsError = false,
-                    Message = $"Sucesses",
-                    Status = (int)StatusCodeEnum.Ok,
+                    Message = "Success",
+                    Status = (int)StatusCodeEnum.Ok
                 });
             }
             catch (StripeException ex)
             {
                 return BadRequest(new { error = $"Stripe error: {ex.Message}" });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = $"Internal error: {ex.Message}" });
+            }
         }
+
+
+
+
+
+
 
         [HttpGet("GetOrderByID/{id}")]
         public async Task<IActionResult> GetOrderById(Guid id)
