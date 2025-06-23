@@ -1,73 +1,230 @@
 ﻿@model IEnumerable<OutbornE_commerce.BAL.Dto.Categories.CategoryDto>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Categories Management";
 }
 
-<body>
-    <h1 class="text-center">Category</h1>
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New Category</a>
-    </p>
-    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" asp-controller="Categ" asp-action="Index" method="get">
-        <div class="input-group" style="width: 500px; margin-bottom: 100px; padding:20px;">
-            <input class="form-control" type="text" name="SearchString" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
-        </div>
-    </form>
-    <table class="table table-striped table-bordered" style="padding:20px">
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.NameEn)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.NameAr)
-                </th>
-             @*    <th>
-                    @Html.DisplayNameFor(model => model.Image)
-                </th> *@
-                <th>Edit</th>
-                <th>Details</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NameEn)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NameAr)
-                    </td>
-               @*      <td>
-                        @if (!string.IsNullOrEmpty(item.Image))
-                        {
-                            <img src="@item.Image" alt="Image" style="max-width: 100px; max-height: 100px; border-radius: 50px" />
-                        }
-                        else
-                        {
-                            <span>No image available</span>
-                        }
-                    </td> *@
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                    </td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                    </td>
+@section Styles {
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
 
-                </tr>
+        .category-name, .category-name-ar {
+            max-width: 250px;
+            word-wrap: break-word;
+        }
+
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #495057;
+            font-weight: 600;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,123,255,0.05);
+        }
+
+        /* DataTables custom styling */
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .page-link {
+            color: #667eea;
+        }
+
+        .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .dt-buttons {
+            margin-bottom: 1rem;
+        }
+
+        .dt-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border: none !important;
+            color: white !important;
+            border-radius: 0.375rem !important;
+            padding: 0.5rem 1rem !important;
+            margin-right: 0.5rem !important;
+            font-weight: 500 !important;
+        }
+
+            .dt-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
             }
-        </tbody>
-    </table>
 
-    <!-- Bootstrap JavaScript (Optional if you need JS features) -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out forwards;
+            opacity: 0;
+        }
 
+     
+    </style>
+}
+
+<div class="container-fluid px-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="card-title mb-0 fs-3 fw-bold">
+                                <i class="fas fa-tags me-2"></i>Categories Management
+                            </h1>
+                            <p class="mb-0 opacity-75">Manage your product categories</p>
+                        </div>
+                        <a asp-action="Create" class="btn btn-light btn-lg shadow-sm">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Category
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table id="categoriesTable" class="table table-hover table-striped align-middle" style="width:100%">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>English Name</th>
+                                    <th>Arabic Name</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="category-name">
+                                                <span class="fw-semibold">@item.NameEn</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="category-name-ar">
+                                                <span class="fw-semibold">@item.NameAr</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id"
+                                                   class="btn btn-info btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                                   class="btn btn-warning btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Edit Category">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                                   class="btn btn-danger btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Delete Category">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Wait for jQuery to be loaded and DOM to be ready
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#categoriesTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                order: [[0, 'asc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy me-1"></i>Copy',
+                        className: 'btn-sm'
+                    },
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel me-1"></i>Excel',
+                        className: 'btn-sm'
+                    },
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1"></i>Print',
+                        className: 'btn-sm'
+                    }
+                ],
+                language: {
+                    search: "Search Categories:",
+                    lengthMenu: "Show _MENU_ categories per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ categories",
+                    infoEmpty: "No categories available",
+                    infoFiltered: "(filtered from _MAX_ total categories)",
+                    zeroRecords: "No matching categories found",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columnDefs: [
+                    { className: "text-center", targets: [2] }
+                ]
+            });
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Add fade-in animation to table rows
+            $('tbody tr').each(function(index) {
+                $(this).css('animation-delay', (index * 0.1) + 's');
+                $(this).addClass('fade-in');
+            });
+        });
+    </script>
+}

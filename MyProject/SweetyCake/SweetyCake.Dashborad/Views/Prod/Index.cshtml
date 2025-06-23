@@ -1,86 +1,331 @@
 ﻿@model IEnumerable<OutbornE_commerce.BAL.Dto.Products.GetAllProductForUserDto>
-
 @{
-	ViewData["Title"] = "Index";
+    ViewData["Title"] = "Products Management";
 }
 
-<body>
-	<h1 class="text-center">Products</h1>
-	<p>
-		<a asp-action="Create" class="btn btn-primary">Create New Product</a>
-	</p>
-	<form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" asp-controller="Categ" asp-action="Index" method="get">
-		<div class="input-group" style="width: 500px; margin-bottom: 100px; padding:20px;">
-			<input class="form-control" type="text" name="SearchString" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-			<button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
-		</div>
-	</form>
-	<table class="table table-striped table-bordered" style="padding:20px">
-		<thead class="thead-dark">
-			<tr>
-				<th>
-					@Html.DisplayNameFor(model => model.NameEn)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.NameAr)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Price)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.DiscountPrice)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.MainImageUrl)
-				</th>
-			
-				<th>Edit</th>
-				<th>Details</th>
-				<th>Delete</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.NameEn)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.NameAr)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Price)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.DiscountPrice)
-					</td>
-					<td style="text-align: center; vertical-align: middle;">
-						@if (!string.IsNullOrEmpty(item.MainImageUrl))
-						{
-							<img src="@item.MainImageUrl" alt="Image" style="max-width: 100px; max-height: 100px; display: block; margin: 0 auto;" />
-						}
-						else
-						{
-							<span>No image available</span>
-						}
-					</td>
-					<td>
-						<a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-					</td>
-					<td>
-						<a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-					</td>
-					<td>
-						<a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-					</td>
+@section Styles {
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
 
-				</tr>
-			}
-		</tbody>
-	</table>
+        .product-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
 
-	<!-- Bootstrap JavaScript (Optional if you need JS features) -->
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+            .product-thumbnail:hover {
+                transform: scale(1.1);
+                border-color: #007bff;
+                box-shadow: 0 4px 15px rgba(0,123,255,0.3) !important;
+            }
 
+        .no-image-placeholder {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            font-size: 12px;
+        }
+
+        .product-name, .product-name-ar {
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #495057;
+            font-weight: 600;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0,123,255,0.05);
+        }
+
+        /* DataTables custom styling */
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .page-link {
+            color: #667eea;
+        }
+
+        .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .dt-buttons {
+            margin-bottom: 1rem;
+        }
+
+        .dt-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border: none !important;
+            color: white !important;
+            border-radius: 0.375rem !important;
+            padding: 0.5rem 1rem !important;
+            margin-right: 0.5rem !important;
+            font-weight: 500 !important;
+        }
+
+            .dt-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+            }
+    </style>
+}
+
+<div class="container-fluid px-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="card-title mb-0 fs-3 fw-bold">
+                                <i class="fas fa-box-open me-2"></i>Products Management
+                            </h1>
+                            <p class="mb-0 opacity-75">Manage your product inventory</p>
+                        </div>
+                        <a asp-action="Create" class="btn btn-light btn-lg shadow-sm">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Product
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table id="productsTable" class="table table-hover table-striped align-middle" style="width:100%">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="text-center">Image</th>
+                                    <th>English Name</th>
+                                    <th>Arabic Name</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Discount Price</th>
+                                    <th class="text-center">Stock</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(item.MainImageUrl))
+                                            {
+                                                <div class="product-image-container">
+                                                    <img src="@item.MainImageUrl"
+                                                         alt="@item.NameEn"
+                                                         class="product-thumbnail rounded shadow-sm"
+                                                         data-bs-toggle="modal"
+                                                         data-bs-target="#imageModal"
+                                                         data-image="@item.MainImageUrl"
+                                                         data-title="@item.NameEn" />
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="no-image-placeholder">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                    <small class="text-muted d-block">No Image</small>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="product-name">
+                                                <span class="fw-semibold">@item.NameEn</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="product-name-ar">
+                                                <span class="fw-semibold">@item.NameAr</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success fs-6 px-3 py-2">
+                                                $@item.Price.ToString("N2")
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (item.DiscountPrice.HasValue && item.DiscountPrice > 0)
+                                            {
+                                                <span class="badge bg-danger fs-6 px-3 py-2">
+                                                    $@item.DiscountPrice.Value.ToString("N2")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @{
+                                                var stockClass = item.Price > 10 ? "success" :
+                                                item.Price > 0 ? "warning" : "danger";
+                                                var stockText = item.Price > 0 ?
+                                                item.Price.ToString() : "Out of Stock";
+                                            }
+                                            <span class="badge bg-@stockClass">@stockText</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@item.Id"
+                                                   class="btn btn-info btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                                   class="btn btn-warning btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Edit Product">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                                   class="btn btn-danger btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Delete Product">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Product Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Wait for jQuery to be loaded and DOM to be ready
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#productsTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                order: [[1, 'asc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<i class="fas fa-copy me-1"></i>Copy',
+                        className: 'btn-sm'
+                    },
+
+                    {
+                        extend: 'excel',
+                        text: '<i class="fas fa-file-excel me-1"></i>Excel',
+                        className: 'btn-sm'
+                    },
+
+                    {
+                        extend: 'print',
+                        text: '<i class="fas fa-print me-1"></i>Print',
+                        className: 'btn-sm'
+                    }
+                ],
+                language: {
+                    search: "Search Products:",
+                    lengthMenu: "Show _MENU_ products per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ products",
+                    infoEmpty: "No products available",
+                    infoFiltered: "(filtered from _MAX_ total products)",
+                    zeroRecords: "No matching products found",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columnDefs: [
+                    { orderable: false, targets: [0, 6] }, // Disable sorting for image and actions columns
+                    { className: "text-center", targets: [0, 3, 4, 5, 6] }
+                ]
+            });
+
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Image modal functionality
+            $('#imageModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var imageSrc = button.data('image');
+                var imageTitle = button.data('title');
+
+                var modal = $(this);
+                modal.find('.modal-title').text(imageTitle);
+                modal.find('#modalImage').attr('src', imageSrc).attr('alt', imageTitle);
+            });
+
+            // Add fade-in animation to table rows
+            $('tbody tr').each(function(index) {
+                $(this).css('animation-delay', (index * 0.1) + 's');
+                $(this).addClass('fade-in');
+            });
+        });
+    </script>
+}
