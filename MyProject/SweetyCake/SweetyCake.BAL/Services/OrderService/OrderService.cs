@@ -3,18 +3,15 @@ using Mapster;
 using OutbornE_commerce.BAL.Dto;
 using OutbornE_commerce.BAL.Dto.Address;
 using OutbornE_commerce.BAL.Dto.OrderDto;
-using OutbornE_commerce.BAL.Repositories.BaseRepositories;
 using OutbornE_commerce.BAL.Repositories.OrderRepo;
 using OutbornE_commerce.DAL.Models;
 using OutbornE_commerce.BAL.Repositories.Address;
-using OutbornE_commerce.BAL.Repositories.ShippingPriceRepo;
-using OutbornE_commerce.FilesManager;
 using Order = OutbornE_commerce.DAL.Models.Order;
 using OutbornE_commerce.DAL.Enums;
 using OutbornE_commerce.BAL.Repositories;
-using OutbornE_commerce.BAL.Dto.Delivery.DeliveryOrders;
 using OutbornE_commerce.BAL.Repositories.Products;
 using OutbornE_commerce.BAL.Dto.Cart;
+using SweetyCake.BAL.Dto;
 
 namespace OutbornE_commerce.BAL.Services.OrderService
 {

@@ -12,13 +12,9 @@ namespace OutbornE_commerce.BAL.Dto.Products
         private int _pageSize = 20;
 
         public string? SearchTerm { get; set; }
-        public List<Guid>? BrandsIds { get; set; }
         public List<Guid>? CategoriesIds { get; set; }
-        public List<Guid>? SizesIds { get; set; }
-        public List<Guid>? ColorsIds { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
-        public List<Guid>? TypeIds { get; set; }
 
         public int PageNumber
         {
