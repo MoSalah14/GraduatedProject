@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-lg-10 col-xl-8">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-gradient-warning text-white py-4">
+                <div class="card-header bg-gradient-primary text-white py-4">
                     <div class="d-flex align-items-center">
                         <div class="icon-circle bg-white bg-opacity-20 me-3">
                             <i class="fas fa-edit text-white"></i>
@@ -165,7 +165,7 @@
                                         <div class="image-upload-card main-image">
                                             <label for="MainImagePhoto" class="upload-area">
                                                 <div class="upload-prompt">
-                                                    <div class="icon-wrapper bg-warning text-white rounded-circle p-3 mb-3">
+                                                    <div class="icon-wrapper bg-primary text-white rounded-circle p-3 mb-3">
                                                         <i class="fas fa-cloud-upload-alt fs-4"></i>
                                                     </div>
                                                     <h6 class="mb-1">Upload new main image</h6>
@@ -212,7 +212,7 @@
                                     <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info btn-lg me-3">
                                         <i class="fas fa-eye me-2"></i>View Details
                                     </a>
-                                    <button type="submit" class="btn btn-gradient-warning btn-lg">
+                                    <button type="submit" class="btn btn-gradient-primary btn-lg">
                                         <i class="fas fa-save me-2"></i>Update Product
                                     </button>
                                 </div>
@@ -226,22 +226,22 @@
 </div>
 
 <style>
-    .bg-gradient-warning {
-        background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
-    .btn-gradient-warning {
-        background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         color: white;
         font-weight: 600;
-        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         transition: all 0.3s ease;
     }
 
-        .btn-gradient-warning:hover {
+        .btn-gradient-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.6);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
             color: white;
         }
 
@@ -272,8 +272,8 @@
     }
 
     .form-control:focus, .form-select:focus {
-        border-color: #ffc107;
-        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     }
 
     .current-image-container, .current-images-container {
@@ -329,10 +329,10 @@
     }
 
         .image-upload-card:hover {
-            border-color: #ffc107;
-            background-color: #fffbf0;
+            border-color: #667eea;
+            background-color: #f8f9ff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
         }
 
     .upload-area {
@@ -345,7 +345,7 @@
     }
 
         .upload-area:hover {
-            background-color: rgba(255, 193, 7, 0.05);
+            background-color: rgba(102, 126, 234, 0.05);
         }
 
     .icon-wrapper {
@@ -416,6 +416,7 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
+ 
 </style>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
