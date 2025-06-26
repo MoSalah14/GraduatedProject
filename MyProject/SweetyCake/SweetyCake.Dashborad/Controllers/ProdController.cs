@@ -161,12 +161,37 @@ namespace SweetyCake.Dashborad.Controllers
             string[] includes = new string[] { "Category", "Reviews.User", "ProductImage" };
 
             var product = await _productRepository.Find(i => i.Id == id, false, includes);
-            var productDto = product.Adapt<ProductForUpdateDto>();
-            if (productDto == null)
+            if (product == null)
                 return NotFound();
+
+            // Map product to ProductForUpdateDto
+            var productDto = new ProductForUpdateDto
+            {
+                Id = product.Id,
+                NameEn = product.NameEn,
+                NameAr = product.NameAr,
+                AboutEn = product.AboutEn,
+                AboutAr = product.AboutAr,
+                MaterialEn = product.MaterialEn,
+                MaterialAr = product.MaterialAr,
+                QuantityInStock = product.QuantityInStock,
+                Price = product.Price,
+                DiscountPrice = product.DiscountPrice,
+                IsPreOrder = product.IsPreOrder,
+                IsActive = product.IsActive,
+                CategoryId = product.CategoryId,
+                MainImagesUrl = product.MainImageUrl, 
+                ImagesUrl = product.ProductImage?.Select(img => img.ImageUrl).ToList() 
+            };
+
+            // Pass image data to ViewBag
+            ViewBag.CurrentMainImage = productDto.MainImagesUrl;
+            ViewBag.CurrentImages = productDto.ImagesUrl;
 
             return View(productDto);
         }
+
+
 
 
         [HttpPost]
