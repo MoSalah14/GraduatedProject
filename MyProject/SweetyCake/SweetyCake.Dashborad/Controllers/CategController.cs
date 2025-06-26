@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace SweetyCake.Dashborad.Controllers
 {
-    public class CategController : DashboardBaseController
+    public class CategController : Controller
     {
         private readonly ICategoryRepository _categoryRepository;
 

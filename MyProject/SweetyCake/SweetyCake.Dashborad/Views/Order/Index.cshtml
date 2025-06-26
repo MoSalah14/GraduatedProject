@@ -1,0 +1,119 @@
+﻿@model IEnumerable<OutbornE_commerce.BAL.Dto.OrderDto.OrderDto>
+
+@{
+    ViewData["Title"] = "Orders Management";
+}
+
+@section Styles {
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+    </style>
+}
+
+<div class="container-fluid px-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-gradient-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="card-title mb-0 fs-3 fw-bold">Orders Management</h1>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table id="ordersTable" class="table table-hover table-striped align-middle" style="width:100%">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Order Number</th>
+                                    <th>Status</th>
+                                    <th>Payment Status</th>
+                                    <th>Shipped Status</th>
+                                    <th>Payment Method</th>
+                                    <th>Created On</th>
+                                    <th>Total Amount</th>
+                                    <th>Order Items</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model)
+                                {
+                                    <tr>
+                                        <td>@order.OrderNumber</td>
+                                        <td>@order.Status</td>
+                                        <td>@order.PaymentStatus</td>
+                                        <td>@order.ShippedStatus</td>
+                                        <td>@order.PaymentStatus</td>
+                                        <td>@order.CreatedOn</td>
+                                        <td>@order.TotalAmount</td>
+                                        <td>
+                                            <ul>
+                                                @foreach (var item in order.OrderItems)
+                                                {
+                                                    <li>
+                                                        Product: @item.ProductNameEn (@item.ProductNameAr),
+                                                        Quantity: @item.Quantity,
+                                                        Price: @item.ItemPrice
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#ordersTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                order: [[0, 'asc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'copy', text: '<i class="fas fa-copy me-1"></i>Copy', className: 'btn-sm' },
+                    { extend: 'excel', text: '<i class="fas fa-file-excel me-1"></i>Excel', className: 'btn-sm' },
+                    { extend: 'print', text: '<i class="fas fa-print me-1"></i>Print', className: 'btn-sm' }
+                ],
+                language: {
+                    search: "Search Orders:",
+                    lengthMenu: "Show _MENU_ orders per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ orders",
+                    infoEmpty: "No orders available",
+                    infoFiltered: "(filtered from _MAX_ total orders)",
+                    zeroRecords: "No matching orders found",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                }
+            });
+
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            $('tbody tr').each(function (index) {
+                $(this).css('animation-delay', (index * 0.1) + 's');
+                $(this).addClass('fade-in');
+            });
+        });
+    </script>
+}

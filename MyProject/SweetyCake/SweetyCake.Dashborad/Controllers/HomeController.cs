@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SweetyCake.Dashborad.Controllers
 {
-    public class HomeController : DashboardBaseController
+    public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
