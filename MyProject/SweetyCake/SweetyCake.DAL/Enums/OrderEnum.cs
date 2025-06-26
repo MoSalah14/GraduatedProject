@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace OutbornE_commerce.DAL.Enums
 {
@@ -36,21 +32,5 @@ namespace OutbornE_commerce.DAL.Enums
         Paid = 0,
         UnPaid = 1,
         // SiteWallet = 2
-    }
-
-    public enum TransactionType
-    {
-        Payment,
-        Recharge
-    }
-    public enum ReturnItemStatus
-    {
-        Pending = 0,
-        Failed = 1,
-        Confirmed = 2,
-        Processing = 3,
-        CANCELLED = 4,
-        Returned = 5,
-        Refunded = 6
     }
 }

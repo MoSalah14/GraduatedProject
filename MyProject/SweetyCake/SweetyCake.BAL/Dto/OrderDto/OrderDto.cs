@@ -25,12 +25,9 @@ namespace OutbornE_commerce.BAL.Dto.OrderDto
         public DateTime CreatedOn { get; set; }
 
         public Guid? AddressId { get; set; }
-        public bool IsReverse { get; set; } = false;
         public AddressForCreationDto? Address { get; set; }
-        public string? TrackingUrl { get; set; }
-        public int? MinReturnDay { get; set; }
 
-        public List<OrderItemDto.OrderItemDto>? OrderItems { get; set; }
+        public List<OrderItemDto>? OrderItems { get; set; }
         public decimal? TotalAmount { get; set; }
     }
 }

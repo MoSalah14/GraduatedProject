@@ -11,7 +11,6 @@ using OutbornE_commerce.BAL.Repositories.OrderItemRepo;
 using OutbornE_commerce.BAL.Repositories.OrderRepo;
 using OutbornE_commerce.BAL.Repositories.ProductImageRepo;
 using OutbornE_commerce.BAL.Repositories.Products;
-using OutbornE_commerce.BAL.Repositories.ShippingPriceRepo;
 using OutbornE_commerce.BAL.Repositories.UserRepo;
 using OutbornE_commerce.BAL.Repositories.UserReviews;
 using OutbornE_commerce.BAL.Repositories.WishList;
@@ -43,7 +42,6 @@ namespace OutbornE_commerce.Extensions
             services.AddScoped<IReviewsRepository, ReviewsRepository>();
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IProductImageRepositry, ProductImageRepositry>();
-            services.AddScoped<IShippingPriceRepo, ShippingPriceRepo>();
             services.AddScoped<IHomeSectionRepository, HomeSectionRepository>();
             services.AddScoped<IBagItemsRepo, BagItemsRepo>();
             services.AddScoped<IWishListRepo, WishListRepo>();

@@ -27,9 +27,7 @@ namespace OutbornE_commerce.DAL.Data
         public DbSet<Reviews> Reviews { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-        public DbSet<DeliveryOrder> DeliveryOrder { get; set; }
         public DbSet<ProductImage> ProductImage { get; set; }
-        public DbSet<ShippingPrice> ShippingPrices { get; set; }
   
 
         protected override void OnModelCreating(ModelBuilder builder)

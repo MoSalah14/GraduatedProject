@@ -24,6 +24,9 @@ namespace OutbornE_commerce.BAL.Dto.Products
         [Display(Name = "Average Rating")]
         public int RatingAverage { get; set; }
 
+        [Display(Name = "Quantity")]
+        public int QuantityInStock { get; set; }
+
         [Display(Name = "Created On")]
         public DateTime? CreatedOn { get; set; }
     }

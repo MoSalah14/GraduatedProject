@@ -56,33 +56,12 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                 RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
                 CategoryID = p.CategoryId,
                 CategoryNameEn = p.Category.NameEn,
-                CategoryNameAr = p.Category.NameAr
+                CategoryNameAr = p.Category.NameAr,
+                QuantityInStock = p.QuantityInStock,
             });
 
 
             return result;
-        }
-
-        public async Task<List<ProductNameIdModel>> GetProductNameAndIdByPaginationAsync(string searchTerm, int pageNumber, int pageSize)
-        {
-            // Base query that selects only Id and NameEn fields
-            var query = _context.Products.Include(e => e.Reviews).AsNoTracking()
-                .Select(p => new ProductNameIdModel
-                {
-                    Id = p.Id,
-                    ProductName = p.NameEn,
-                    Review = p.Reviews
-                });
-
-            if (!string.IsNullOrEmpty(searchTerm))
-                query = query.Where(p => p.ProductName.Contains(searchTerm));
-
-            int totalCount = await query.CountAsync();
-
-            var ProductsWithReview = await query.Skip((pageNumber - 1) * pageSize)
-                                               .Take(pageSize)
-                                               .ToListAsync();
-            return ProductsWithReview;
         }
 
         public async Task<PagainationModel<List<Product>>> SearchProducts(SearchModelDto model, SortingCriteria? sortingCriteria = null)
@@ -160,6 +139,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                     Price = p.Price,
                     DiscountPrice = p.DiscountPrice,
                     RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
+                    QuantityInStock = p.QuantityInStock
                 })
                 .ToListAsync();
 
