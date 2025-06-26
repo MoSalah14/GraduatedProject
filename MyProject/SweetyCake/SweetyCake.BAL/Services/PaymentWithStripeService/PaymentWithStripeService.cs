@@ -37,6 +37,8 @@ namespace Infrastructure.Services.PaymentWithStripeService
 
         public async Task<SessisonResponse> CreateCheckoutSession(string UserId, long productPrice, long deliveryPrice, string description, Guid orderId)
         {
+            var baseUrl = env.IsDevelopment() ? FrontBaseUrl.Local : FrontBaseUrl.Production;
+
             StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
 
             var userWithCurrency = await _userManager.FindByIdAsync(UserId);
@@ -56,42 +58,44 @@ namespace Infrastructure.Services.PaymentWithStripeService
                 Customer = customerId,
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>
-        {
-            new SessionLineItemOptions
             {
-                PriceData = new SessionLineItemPriceDataOptions
+                new SessionLineItemOptions
                 {
-                    Currency = "EGP",
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = description,
-                    },
-                    UnitAmount = productPrice * 100,
-                },
-                Quantity = 1,
-            },
-            new SessionLineItemOptions
+            PriceData = new SessionLineItemPriceDataOptions
             {
-                PriceData = new SessionLineItemPriceDataOptions
+                Currency = "EGP",
+                ProductData = new SessionLineItemPriceDataProductDataOptions
                 {
-                    Currency = "EGP",
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = "Delivery Charge",
-                    },
-                    UnitAmount = deliveryPrice * 100,
+                    Name = description,
                 },
-                Quantity = 1,
+                UnitAmount = productPrice * 100,
             },
-        },
+            Quantity = 1,
+             },
+                    new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            Currency = "EGP",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = "Delivery Charge",
+                            },
+                            UnitAmount = deliveryPrice * 100,
+                        },
+                        Quantity = 1,
+                    },
+                },
                 Mode = "payment",
-                SuccessUrl = (env.IsDevelopment() ? $"{FrontBaseUrl.Local}" : $"{FrontBaseUrl.Production}") + "user/order-submition",
-                CancelUrl = env.IsDevelopment() ? $"{FrontBaseUrl.Local}" : $"{FrontBaseUrl.Production}",
+                SuccessUrl = $"{baseUrl}en/cart/check-out/accepted",
+                CancelUrl = $"{baseUrl}en/cart/check-out/rejected",
                 Metadata = new Dictionary<string, string>
                 {
-                    { "OrderId", orderId.ToString() }
+                    { "OrderId", orderId.ToString() },
+                    { "UserId", UserId.ToString() }
                 }
             };
+
             var service = new SessionService();
             var session = await service.CreateAsync(options);
             return new SessisonResponse

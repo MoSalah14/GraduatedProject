@@ -50,6 +50,17 @@ namespace OutbornE_commerce.BAL.Services.OrderService
                 long totalAmount = 0;
                 var productItemsForDelivery = new List<ProductItem>();
 
+                if (!userCart.cartItemDtos.Any())
+                {
+                    return new Response<string>
+                    {
+                        Message = "Cart is Empty",
+                        IsError = true,
+                        MessageAr = "العربة فارغة",
+                        Status = (int)StatusCodeEnum.BadRequest
+                    };
+                }
+
                 foreach (var item in userCart.cartItemDtos)
                 {
                     var existingProduct = await _ProductRepository.Find(i => i.Id == item.ProductId && i.QuantityInStock > 0, true, new string[] { "BagItem" });

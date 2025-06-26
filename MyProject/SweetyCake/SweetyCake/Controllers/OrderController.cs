@@ -290,7 +290,7 @@ namespace OutbornE_commerce.Controllers
                     return BadRequest(new { error = "Missing Stripe-Signature header." });
 
 
-                var stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, configuration["Stripe:WebhookSecret"]);
+                var stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, configuration["Stripe:WebhookSecret"], throwOnApiVersionMismatch: false);
 
                 if (stripeEvent == null)
                     return BadRequest(new { error = "Invalid Stripe event." });

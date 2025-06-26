@@ -28,20 +28,16 @@ namespace OutbornE_commerce.BAL.AuthServices
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ExternalLoginAuth externalLogins;
         private readonly HttpClient httpClient;
         private User? _user;
         private string GoogleRedirectUrl;
         private string FaceBookRedirectUrl;
-        private readonly string BaseUrl;
 
         public AuthService(UserManager<User> userManager, IConfiguration configuration,
-            IHttpClientFactory httpClientFactory,
-            IHttpContextAccessor httpContextAccessor
+            IHttpClientFactory httpClientFactory
             , IOptions<ExternalLoginAuth> ExternalLogins)
         {
-            _httpContextAccessor = httpContextAccessor;
             externalLogins = ExternalLogins.Value;
             _userManager = userManager;
             _configuration = configuration;
@@ -101,43 +97,6 @@ namespace OutbornE_commerce.BAL.AuthServices
             var claims = await GetClaims();
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-        }
-
-        private SigningCredentials GetSigningCredentials()
-        {
-            var key = Encoding.UTF8.GetBytes("HQDshfnnystWB3Ff4tKeQx3d0aIR2uoEurrknFhsyjA");
-            var secret = new SymmetricSecurityKey(key);
-            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
-        }
-
-        private async Task<List<Claim>> GetClaims()
-        {
-            var claims = new List<Claim> {
-                new Claim("userName", _user.FullName!),
-                new Claim("uid", _user.Id!),
-                new Claim("email", _user.Email!),
-            };
-            var roles = await _userManager.GetRolesAsync(_user);
-
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            return claims;
-        }
-
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
-        {
-            var jwtSettings = _configuration.GetSection("JWT");
-            var tokenOptions = new JwtSecurityToken(
-                issuer: jwtSettings.GetSection("Issuer").Value,
-                audience: jwtSettings.GetSection("Audience").Value,
-                claims: claims,
-                expires: DateTime.Now.AddMonths(Convert.ToInt32(jwtSettings.GetSection("expires").Value)),
-                signingCredentials: signingCredentials
-                );
-            return tokenOptions;
         }
 
         public async Task<ExternalLoginResult> LoginWithFaceBookAsync(string accessToken)
@@ -270,6 +229,48 @@ namespace OutbornE_commerce.BAL.AuthServices
             }
         }
 
+
+        #region Helper Methods
+
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = Encoding.UTF8.GetBytes("HQDshfnnystWB3Ff4tKeQx3d0aIR2uoEurrknFhsyjA");
+            var secret = new SymmetricSecurityKey(key);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+        }
+
+        private async Task<List<Claim>> GetClaims()
+        {
+            var claims = new List<Claim> {
+                new Claim("userName", _user.FullName!),
+                new Claim("uid", _user.Id!),
+                new Claim("email", _user.Email!),
+            };
+            var roles = await _userManager.GetRolesAsync(_user);
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            return claims;
+        }
+
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        {
+            var jwtSettings = _configuration.GetSection("JWT");
+            var tokenOptions = new JwtSecurityToken(
+                issuer: jwtSettings.GetSection("Issuer").Value,
+                audience: jwtSettings.GetSection("Audience").Value,
+                claims: claims,
+                expires: DateTime.Now.AddMonths(Convert.ToInt32(jwtSettings.GetSection("expires").Value)),
+                signingCredentials: signingCredentials
+                );
+            return tokenOptions;
+        }
+
+        
+
         private async Task<GoogleTokenResponse> GetGoogleTokenAsync(string code)
         {
             var tokenRequest = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/token")
@@ -301,5 +302,8 @@ namespace OutbornE_commerce.BAL.AuthServices
             else
                 return null;
         }
+
+        #endregion
+
     }
 }
