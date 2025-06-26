@@ -199,10 +199,10 @@
                                         </td>
                                         <td class="text-center">
                                             @{
-                                                var stockClass = item.Price > 10 ? "success" :
-                                                item.Price > 0 ? "warning" : "danger";
-                                                var stockText = item.Price > 0 ?
-                                                item.Price.ToString() : "Out of Stock";
+                                                var stockClass = item.QuantityInStock > 10 ? "success" :
+                                                item.QuantityInStock > 0 ? "warning" : "danger";
+                                                var stockText = item.QuantityInStock > 0 ?
+                                                item.QuantityInStock.ToString() : "Out of Stock";
                                             }
                                             <span class="badge bg-@stockClass">@stockText</span>
                                         </td>

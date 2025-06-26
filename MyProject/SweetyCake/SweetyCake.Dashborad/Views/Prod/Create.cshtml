@@ -101,9 +101,9 @@
                                     </div>
 
                                     <div class="form-floating mb-3">
-                                        <input asp-for="NumberOfPieceAvailable" type="number" class="form-control" placeholder="Stock Quantity" />
-                                        <label for="NumberOfPieceAvailable">Stock Quantity *</label>
-                                        <span asp-validation-for="NumberOfPieceAvailable" class="text-danger small"></span>
+                                        <input asp-for="QuantityInStock" type="number" class="form-control" placeholder="Stock Quantity" />
+                                        <label for="QuantityInStock">Stock Quantity *</label>
+                                        <span asp-validation-for="QuantityInStock" class="text-danger small"></span>
                                     </div>
 
                                     <div class="form-floating mb-4">
@@ -396,7 +396,7 @@
                 isValid = false;
             }
 
-            if (!$('#NumberOfPieceAvailable').val() || parseInt($('#NumberOfPieceAvailable').val()) < 0) {
+            if (!$('#QuantityInStock').val() || parseInt($('#QuantityInStock').val()) < 0) {
                 errorMessages.push('Valid Stock Quantity is required');
                 isValid = false;
             }

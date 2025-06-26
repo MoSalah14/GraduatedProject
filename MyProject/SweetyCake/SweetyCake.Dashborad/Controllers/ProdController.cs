@@ -31,7 +31,7 @@ namespace SweetyCake.Dashborad.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string? searchTerm = null, [FromQuery] SortingCriteria? sortingCriteria = null)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 100000, string? searchTerm = null, [FromQuery] SortingCriteria? sortingCriteria = null)
         {
             try
             {

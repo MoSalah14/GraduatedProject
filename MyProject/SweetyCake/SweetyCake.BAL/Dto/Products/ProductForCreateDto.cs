@@ -11,7 +11,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
         public string AboutAr { get; set; }
         public string MaterialEn { get; set; }
         public string MaterialAr { get; set; }
-        public int NumberOfPieceAvailable { get; set; }
+        public int QuantityInStock { get; set; }
         public decimal Price { get; set; }
         public decimal DiscountPrice { get; set; }
 
