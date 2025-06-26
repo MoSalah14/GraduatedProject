@@ -206,7 +206,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.BagItem", b =>
@@ -246,7 +246,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BagItems");
+                    b.ToTable("BagItems", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Category", b =>
@@ -297,7 +297,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("NameEn", "NameAr"), false);
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ContactUs", b =>
@@ -342,7 +342,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ContactUs");
+                    b.ToTable("ContactUs", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Coupons", b =>
@@ -402,7 +402,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.DeliveryOrder", b =>
@@ -467,7 +467,7 @@ namespace OutbornE_commerce.DAL.Migrations
                         .IsUnique()
                         .HasFilter("[OrderId] IS NOT NULL");
 
-                    b.ToTable("DeliveryOrder");
+                    b.ToTable("DeliveryOrder", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.HomeSection", b =>
@@ -492,7 +492,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeSections");
+                    b.ToTable("HomeSections", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Order", b =>
@@ -536,9 +536,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<decimal>("ShippingPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -566,7 +563,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     SqlServerIndexBuilderExtensions.IsClustered(b.HasIndex("OrderStatus", "ShippedStatus", "PaymentStatus", "PaymentMethod"), false);
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.OrderItem", b =>
@@ -580,9 +577,6 @@ namespace OutbornE_commerce.DAL.Migrations
                     b.Property<decimal>("ItemPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("ProductWeight")
-                        .HasColumnType("float");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -590,7 +584,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Product", b =>
@@ -672,7 +666,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.ProductImage", b =>
@@ -691,7 +685,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImage");
+                    b.ToTable("ProductImage", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.Reviews", b =>
@@ -727,43 +721,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
-                });
-
-            modelBuilder.Entity("OutbornE_commerce.DAL.Models.ShippingPrice", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShippingPrices");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("OutbornE_commerce.DAL.Models.User", b =>
@@ -885,7 +843,7 @@ namespace OutbornE_commerce.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("WishLists");
+                    b.ToTable("WishLists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

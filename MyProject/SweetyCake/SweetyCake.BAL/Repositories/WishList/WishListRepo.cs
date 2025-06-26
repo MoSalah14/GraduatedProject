@@ -26,6 +26,7 @@ namespace OutbornE_commerce.BAL.Repositories.WishList
             {
                 ProductId = wishList.ProductId,
                 ProductNameEn = wishList.ProductWishList.NameEn,
+                ProductNameAr = wishList.ProductWishList.NameAr,
                 ImageUrl = wishList.ProductWishList.MainImageUrl,
                 ItemPrice = wishList.ProductWishList?.Price,
                 QuantityInStock = wishList.ProductWishList.QuantityInStock

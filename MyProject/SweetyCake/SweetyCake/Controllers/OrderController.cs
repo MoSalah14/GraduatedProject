@@ -81,7 +81,7 @@ namespace OutbornE_commerce.Controllers
         }
 
         [HttpGet("GetAllUserOrders")]
-        public async Task<IActionResult> GetAllUserOrders(int pageNumber = 1, int pageSize = 3, string? DateRange = "last30days")
+        public async Task<IActionResult> GetAllUserOrders(int pageNumber = 1, int pageSize = 3, string? DateRange = "thisyear")
         {
             string[] includes =
                 new string[] { "OrderItems.Product" };
@@ -186,17 +186,14 @@ namespace OutbornE_commerce.Controllers
                     Data = null,
                     Message = "Invalid Order Id",
 
-                    MessageAr = "لم يتم العثور عن اوردر",
+                    MessageAr = "لم يتم العثور علي اوردر",
                     IsError = true,
                     Status = (int)StatusCodeEnum.NotFound
                 });
             }
 
             var data = order.Adapt<OrderDto>();
-            if (order.PaymentStatus != PaymentStatus.UnPaid && order.PaymentMethod != DAL.Enums.PaymentMethod.Strip)
-            {
-                data.TrackingUrl = order.Delivery.TrackingUrl;
-            }
+
             return Ok(new Response<OrderDto>
             {
                 Data = data,

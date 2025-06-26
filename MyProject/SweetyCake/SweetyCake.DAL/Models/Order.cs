@@ -30,8 +30,6 @@ namespace OutbornE_commerce.DAL.Models
 
         public decimal TotalAmount
         {
-            set { }
-
             get
             {
                 return OrderItems?.Sum(item => item.Quantity * item.ItemPrice) ?? 0;
