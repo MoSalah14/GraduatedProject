@@ -35,7 +35,7 @@ namespace SweetyCake.Dashborad.Controllers
         {
             try
             {
-                var ProductsResponse = _productRepository.GetAllProductInHomePage(searchTerm, pageNumber, pageSize, sortingCriteria);
+                var ProductsResponse = _productRepository.GetAllProductInHomePage(searchTerm, pageNumber, pageSize, null, sortingCriteria);
 
                 int TotalProductCount = await ProductsResponse.CountAsync();
 
@@ -180,8 +180,8 @@ namespace SweetyCake.Dashborad.Controllers
                 IsPreOrder = product.IsPreOrder,
                 IsActive = product.IsActive,
                 CategoryId = product.CategoryId,
-                MainImagesUrl = product.MainImageUrl, 
-                ImagesUrl = product.ProductImage?.Select(img => img.ImageUrl).ToList() 
+                MainImagesUrl = product.MainImageUrl,
+                ImagesUrl = product.ProductImage?.Select(img => img.ImageUrl).ToList()
             };
 
             // Pass image data to ViewBag

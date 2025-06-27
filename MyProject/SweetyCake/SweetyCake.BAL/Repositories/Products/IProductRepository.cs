@@ -18,13 +18,12 @@ namespace OutbornE_commerce.BAL.Repositories.Products
     public interface IProductRepository : IBaseRepository<Product>
     {
 
-        Task<PaginationResponse<List<GetAllProductForUserDtoWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria);
+        Task<PaginationResponse<List<GetAllProductForUserDtoWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, string? userId, SortingCriteria? sortingCriteria);
 
-        Task<PagainationModel<List<Product>>> SearchProducts(SearchModelDto model, SortingCriteria? sortingCriteria = null);
 
-        IQueryable<GetAllProductForUserDtoWithCategory> GetAllProductInHomePage(string? searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null, Guid? CategoryId = null);
-        Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(int flashsaleNumber);
-        Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync();
+        IQueryable<GetAllProductForUserDtoWithCategory> GetAllProductInHomePage(string? searchTerm, int pageNumber, int pageSize, string? userId, SortingCriteria? sortingCriteria = null, Guid? CategoryId = null);
+        Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(string? userId, int flashsaleNumber);
+        Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync(string? userId);
 
     }
 }

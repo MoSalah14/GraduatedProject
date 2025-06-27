@@ -27,29 +27,21 @@ namespace OutbornE_commerce.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
-        private readonly SignInManager<User> signInManager;
-        private readonly IConfiguration Configuration;
         private readonly IEmailSenderCustom emailSender;
         private readonly FrontBaseUrlSettings FrontBaseUrl;
-        private readonly IHostEnvironment Environment;
+        private readonly IHostEnvironment _Environment;
         private readonly RoleManager<IdentityRole> _RoleManager;
-        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public AuthController(IWebHostEnvironment env, UserManager<User> userManager, IAuthService authService,
-             SignInManager<User> signInManager,
-            IConfiguration _configuration, IEmailSenderCustom emailSender,
-            IOptions<FrontBaseUrlSettings> option, IHostEnvironment _env, RoleManager<IdentityRole> roleManager)
+        public AuthController(IWebHostEnvironment env, UserManager<User> userManager, IAuthService authService, IEmailSenderCustom emailSender,
+            IOptions<FrontBaseUrlSettings> option, RoleManager<IdentityRole> roleManager)
         {
-            Environment = _env;
             _RoleManager = roleManager;
             _RoleManager = roleManager;
             _userManager = userManager;
             _authService = authService;
-            this.signInManager = signInManager;
-            Configuration = _configuration;
             this.emailSender = emailSender;
             FrontBaseUrl = option.Value;
-            webHostEnvironment = env;
+            _Environment = env;
         }
 
         [HttpPost("registerUser")]
@@ -149,11 +141,11 @@ namespace OutbornE_commerce.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, GeneratedToken);
             if (result.Succeeded)
             {
-
                 await emailSender.SendEmailAsync(user.Email, "Welcome", "Welcome to Sweety’s Community");
 
-                return Ok("Email confirmed successfully.");
+                var baseUrl = _Environment.IsDevelopment() ? FrontBaseUrl.Local : FrontBaseUrl.Production;
 
+                return Redirect(baseUrl);
             }
 
             return BadRequest("Email confirmation failed.");
@@ -213,9 +205,8 @@ namespace OutbornE_commerce.Controllers
                 return BadRequest("Invalid request.");
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            // var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            var BaseUrl = Environment.IsDevelopment() ? FrontBaseUrl.Local : FrontBaseUrl.Production;
+            var BaseUrl = _Environment.IsDevelopment() ? FrontBaseUrl.Local : FrontBaseUrl.Production;
 
             var callbackUrl = $"{BaseUrl}auth/reset-pass?token={token}&email={Uri.EscapeDataString(user.Email)}";
 

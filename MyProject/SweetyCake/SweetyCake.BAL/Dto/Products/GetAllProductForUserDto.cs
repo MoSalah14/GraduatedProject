@@ -29,6 +29,7 @@ namespace OutbornE_commerce.BAL.Dto.Products
 
         [Display(Name = "Created On")]
         public DateTime? CreatedOn { get; set; }
+        public bool IsLiked { get; set; }
     }
 
     public class GetAllProductForUserDtoWithCategory : GetAllProductForUserDto

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OutbornE_commerce.BAL.Repositories.ProductImageRepo;
 using OutbornE_commerce.BAL.Extentions;
 using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.Extensions;
 
 namespace OutbornE_commerce.Controllers
 {
@@ -29,7 +30,9 @@ namespace OutbornE_commerce.Controllers
         {
             try
             {
-                var ProductsResponse = _productRepository.GetAllProductInHomePage(searchTerm, pageNumber, pageSize, sortingCriteria, CategoryId);
+                var userId = User.GetUserIdFromToken();
+
+                var ProductsResponse = _productRepository.GetAllProductInHomePage(searchTerm, pageNumber, pageSize, userId, sortingCriteria, CategoryId);
 
                 int TotalProductCount = await ProductsResponse.CountAsync();
 
@@ -317,24 +320,6 @@ namespace OutbornE_commerce.Controllers
             }
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> SearchProducts([FromBody] SearchModelDto model, [FromQuery] SortingCriteria? sortingCriteria = null)
-        {
-            var products = await _productRepository.SearchProducts(model, sortingCriteria);
-
-            var data = products.Data.Adapt<List<GetAllProductForUserDtoWithCategory>>();
-
-            return Ok(new PaginationResponse<List<GetAllProductForUserDtoWithCategory>>
-            {
-                Data = data,
-                IsError = false,
-                Status = (int)StatusCodeEnum.Ok,
-                PageNumber = model.PageNumber,
-                PageSize = model.PageSize,
-                TotalCount = products.TotalCount
-            });
-        }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id, CancellationToken cancellationToken)
         {
@@ -388,7 +373,10 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("flashsale")]
         public async Task<IActionResult> GetFlashSaleProducts(int flashsaleNumber)
         {
-            var products = await _productRepository.GetFlashSaleProductsAsync(flashsaleNumber);
+            var userId = User.GetUserIdFromToken();
+
+
+            var products = await _productRepository.GetFlashSaleProductsAsync(userId, flashsaleNumber);
 
 
             var data = products.Adapt<List<GetAllProductForUserDto>>();
@@ -411,7 +399,10 @@ namespace OutbornE_commerce.Controllers
             if (CategoryId == Guid.Empty)
                 return BadRequest("Invalid category ID.");
 
-            var response = await _productRepository.GetProductsByCategoryAsync(CategoryId, pageNumber, pageSize, sortingCriteria);
+
+            var userId = User.GetUserIdFromToken();
+
+            var response = await _productRepository.GetProductsByCategoryAsync(CategoryId, pageNumber, pageSize, userId, sortingCriteria);
 
             if (response is null)
             {
@@ -431,7 +422,9 @@ namespace OutbornE_commerce.Controllers
         [HttpGet("newArrivale")]
         public async Task<IActionResult> GetNewArrivaleProducts()
         {
-            var products = await _productRepository.GetNewArrivaleProductsAsync();
+            var userId = User.GetUserIdFromToken();
+
+            var products = await _productRepository.GetNewArrivaleProductsAsync(userId);
 
 
             var data = products.Adapt<List<GetAllProductForUserDto>>();

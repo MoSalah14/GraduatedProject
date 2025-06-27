@@ -17,7 +17,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
         }
 
 
-        public IQueryable<GetAllProductForUserDtoWithCategory> GetAllProductInHomePage(string? searchTerm, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null, Guid? CategoryId = null)
+        public IQueryable<GetAllProductForUserDtoWithCategory> GetAllProductInHomePage(string? searchTerm, int pageNumber, int pageSize, string? userId, SortingCriteria? sortingCriteria = null, Guid? CategoryId = null)
         {
             // Start the query
 
@@ -44,7 +44,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                 ProductQuery = ProductQuery.ApplySorting(sortingCriteria);
             }
 
-            var result = ProductQuery.Include(e => e.Category).Select(p => new GetAllProductForUserDtoWithCategory
+            var result = ProductQuery.Include(e => e.Category).Include(e => e.WishLists).Select(p => new GetAllProductForUserDtoWithCategory
             {
                 Id = p.Id,
                 NameEn = p.NameEn,
@@ -58,38 +58,15 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                 CategoryNameEn = p.Category.NameEn,
                 CategoryNameAr = p.Category.NameAr,
                 QuantityInStock = p.QuantityInStock,
+                IsLiked = userId != null && p.WishLists.Any(w => w.UserId == userId)
             });
 
 
             return result;
         }
 
-        public async Task<PagainationModel<List<Product>>> SearchProducts(SearchModelDto model, SortingCriteria? sortingCriteria = null)
-        {
-            int totalCount = 0;
-            var products = _context.Products
-                                   .AsNoTracking()
-                                   .Include(b => b.Category)
-                                   .SearchByTerm(model.SearchTerm)
-                                   .SearchByPrice(model.MinPrice, model.MaxPrice);
-
-            if (sortingCriteria is not null)
-            {
-                products = products.ApplySorting(sortingCriteria);
-            }
-            totalCount = await products.CountAsync();
-            var data = await products.Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
-
-            return new PagainationModel<List<Product>>()
-            {
-                TotalCount = totalCount,
-                Data = data,
-                PageNumber = model.PageNumber,
-                PageSize = model.PageSize,
-            };
-        }
-
-        public async Task<PaginationResponse<List<GetAllProductForUserDtoWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, SortingCriteria? sortingCriteria = null)
+        
+        public async Task<PaginationResponse<List<GetAllProductForUserDtoWithCategory>>> GetProductsByCategoryAsync(Guid CategoryId, int pageNumber, int pageSize, string? userId, SortingCriteria? sortingCriteria = null)
         {
             var query = _context.Products
                 .Where(e => e.CategoryId == CategoryId).Include(e => e.Category).Select(p => new GetAllProductForUserDtoWithCategory
@@ -100,7 +77,8 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                     Price = p.Price,
                     CategoryID = p.CategoryId,
                     CategoryNameEn = p.Category.NameEn,
-                    CategoryNameAr = p.Category.NameAr
+                    CategoryNameAr = p.Category.NameAr,
+                    IsLiked = userId != null && p.WishLists.Any(w => w.UserId == userId)
                 });
 
             if (sortingCriteria is not null)
@@ -123,7 +101,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
             };
         }
 
-        public async Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(int flashsaleNumber)
+        public async Task<List<GetAllProductForUserDto>> GetFlashSaleProductsAsync(string? userId, int flashsaleNumber)
         {
             var productQuery = await _context.Products
                 .Where(e => e.DiscountPrice > 0)
@@ -139,14 +117,15 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                     Price = p.Price,
                     DiscountPrice = p.DiscountPrice,
                     RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
-                    QuantityInStock = p.QuantityInStock
+                    QuantityInStock = p.QuantityInStock,
+                    IsLiked = userId != null && p.WishLists.Any(w => w.UserId == userId)
                 })
                 .ToListAsync();
 
             return productQuery;
         }
 
-        public async Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync()
+        public async Task<List<GetAllProductForUserDto>> GetNewArrivaleProductsAsync(string? userId)
         {
             var productQuery = await _context.Products
                 .OrderByDescending(e => e.CreatedOn)
@@ -161,6 +140,7 @@ namespace OutbornE_commerce.BAL.Repositories.Products
                     Price = p.Price,
                     DiscountPrice = p.DiscountPrice,
                     RatingAverage = (int)(p.Reviews.Average(r => r.Rating) ?? 0),
+                    IsLiked = userId != null && p.WishLists.Any(w => w.UserId == userId),
                 })
                 .ToListAsync();
 

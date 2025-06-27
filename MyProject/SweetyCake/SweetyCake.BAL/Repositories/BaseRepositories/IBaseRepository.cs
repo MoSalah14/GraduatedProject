@@ -12,8 +12,12 @@ namespace OutbornE_commerce.BAL.Repositories.BaseRepositories
 	public interface IBaseRepository<T> where T : class
 	{
         Task<IEnumerable<T>> FindAllAsync(string[] includes, bool withNoTracking = true);
-		Task<PagainationModel<IEnumerable<T>>> FindAllAsyncByPagination(Expression<Func<T, bool>>? criteria = null, int pageNumber = 1, int pageSize = 10, string[] includes = null);
-        //Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges);
+        Task<PagainationModel<IEnumerable<T>>> FindAllAsyncByPagination(
+           Expression<Func<T, bool>>? criteria = null,
+           int pageNumber = 1,
+           int pageSize = 10,
+           string[] includes = null,
+           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
         Task<IEnumerable<T>> FindByCondition(Expression<Func<T, bool>> criteria, string[] includes = null);
 
         Task<T?> Find(Expression<Func<T, bool>> expression, bool trackChanges = false, string[] includes = null);

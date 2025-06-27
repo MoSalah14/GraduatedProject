@@ -112,10 +112,9 @@ namespace OutbornE_commerce.Controllers
                     e => e.UserId == userID &&
                          (startDate == null || e.CreatedOn >= startDate) &&
                          (endDate == null || e.CreatedOn <= endDate),
-                    pageNumber, pageSize, includes);
-                var data = items.Data.Adapt<List<OrderDto>>();
+                    pageNumber, pageSize, includes, e => e.OrderByDescending(e => e.CreatedOn));
 
-                data = data.OrderByDescending(e => e.CreatedOn).ToList(); // Just For Now Correct Way Must Order in Db Use IQuryble
+                var data = items.Data.Adapt<List<OrderDto>>();
 
                 return Ok(new PaginationResponse<List<OrderDto>>
                 {
