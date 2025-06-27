@@ -1,13 +1,11 @@
-﻿using OutbornE_commerce.BAL.Repositories.BaseRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OutbornE_commerce.BAL.Dto.Address;
+using OutbornE_commerce.BAL.Repositories.BaseRepositories;
+using OutbornE_commerce.DAL.Models;
 
-namespace OutbornE_commerce.BAL.Repositories.Address
+namespace OutbornE_commerce.BAL.Repositories
 {
-    public interface IAddressRepository : IBaseRepository<DAL.Models.Address>
+    public interface IAddressRepository : IBaseRepository<Address>
     {
+        Task<Address> CreateAddress(Address addressForCreation, string userId, CancellationToken cancellationToken);
     }
 }

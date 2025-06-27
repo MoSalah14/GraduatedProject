@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OutbornE_commerce.BAL.Dto.Address;
-using OutbornE_commerce.BAL.Repositories.Address;
-using OutbornE_commerce.DAL.Models;
+using OutbornE_commerce.BAL.Repositories;
 using OutbornE_commerce.Extensions;
 using System.Threading;
 

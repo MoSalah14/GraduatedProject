@@ -18,12 +18,12 @@ namespace OutbornE_commerce.BAL.Dto
         public string Email { get; set; }
         [Required, StringLength(256)]
         public string Password { get; set; }
-        [Required, StringLength(15)]
+        [Required, StringLength(150)]
         public string PhoneNumber { get; set; }
-        [Required, StringLength(15)]
+        [Required, StringLength(150)]
         public string Address { get; set; }
 
-        [Required, StringLength(15)]
+        [Required, StringLength(150)]
         public string City { get; set; }
     }
 }

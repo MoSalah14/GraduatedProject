@@ -2,7 +2,6 @@
 using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Repositories;
-using OutbornE_commerce.BAL.Repositories.Address;
 using OutbornE_commerce.BAL.Repositories.BaseRepositories;
 using OutbornE_commerce.BAL.Repositories.Categories;
 using OutbornE_commerce.BAL.Repositories.ContactUs;

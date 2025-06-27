@@ -12,6 +12,7 @@ using OutbornE_commerce.BAL.AuthServices;
 using OutbornE_commerce.BAL.EmailServices;
 using OutbornE_commerce.BAL.Extentions;
 using OutbornE_commerce.BAL.External_Logins;
+using OutbornE_commerce.BAL.Repositories;
 using OutbornE_commerce.Extensions;
 using PreMailer.Net;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,11 +32,13 @@ namespace OutbornE_commerce.Controllers
         private readonly FrontBaseUrlSettings FrontBaseUrl;
         private readonly IHostEnvironment _Environment;
         private readonly RoleManager<IdentityRole> _RoleManager;
+        private readonly IAddressRepository _AddressRepository;
 
         public AuthController(IWebHostEnvironment env, UserManager<User> userManager, IAuthService authService, IEmailSenderCustom emailSender,
-            IOptions<FrontBaseUrlSettings> option, RoleManager<IdentityRole> roleManager)
+            IOptions<FrontBaseUrlSettings> option, RoleManager<IdentityRole> roleManager, IAddressRepository addressRepository)
         {
             _RoleManager = roleManager;
+            _AddressRepository = addressRepository;
             _RoleManager = roleManager;
             _userManager = userManager;
             _authService = authService;
@@ -76,6 +79,22 @@ namespace OutbornE_commerce.Controllers
                         Email = userForRegistration.Email,
                     });
                 }
+
+                var address = new Address
+                {
+                    UserId = user.Id,
+                    BuildingNumber = "A1",
+                    AddressLine = userForRegistration.Address,
+                    CreatedBy = user.Id,
+                    CreatedOn = DateTime.UtcNow,
+                    IsDeafult = true,
+                    Governorate = userForRegistration.City,
+                    Street = "شارع 9",
+                    LandMark = "بجوار مجمع البنوك",
+                };
+
+                await _AddressRepository.Create(address);
+
 
                 if (await _RoleManager.RoleExistsAsync("Customer"))
                 {
