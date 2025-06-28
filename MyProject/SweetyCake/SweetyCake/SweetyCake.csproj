@@ -39,4 +39,7 @@
     <ProjectReference Include="..\SweetyCake.DAL\SweetyCake.DAL.csproj" />
     <ProjectReference Include="..\SweetyCake.Dashborad\SweetyCake.Dashborad.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\dataTable\" />
+  </ItemGroup>
 </Project>

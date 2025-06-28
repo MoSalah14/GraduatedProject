@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] Sweety Cake Dashboard</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/SweetyCake.Dashborad.styles.css" asp-append-version="true" /> *@
     <link href="~/css/Dash.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/dashboard/css/normalize.css" rel="stylesheet" />
@@ -16,55 +15,334 @@
     <link href="~/dashboard/css/styles.css" rel="stylesheet" />
 
     <!-- DataTables CSS -->
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+
+    <style>
+        :root {
+            --primary-color: #414345;
+            --accent-color: #ffabb8;
+            --light-gray: #f8f9fa;
+            --border-color: rgba(255, 171, 184, 0.2);
+            --hover-color: rgba(255, 171, 184, 0.1);
+            --text-muted: #6c757d;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-gray) 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Styling */
+        .sb-topnav {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #525557 100%) !important;
+            border-bottom: 3px solid var(--accent-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: var(--white) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+            .navbar-brand::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background: var(--accent-color);
+                border-radius: 2px;
+            }
+
+        .btn-link {
+            color: var(--white) !important;
+            transition: all 0.3s ease;
+        }
+
+            .btn-link:hover {
+                color: var(--accent-color) !important;
+                transform: scale(1.1);
+            }
+
+        /* Sidebar Styling */
+        .sb-sidenav {
+            background: linear-gradient(180deg, var(--primary-color) 0%, #3a3c3e 100%) !important;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            border-right: 1px solid var(--border-color);
+        }
+
+            .sb-sidenav .nav-link {
+                color: #e0e0e0 !important;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                margin: 0.25rem 1rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .sb-sidenav .nav-link::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, var(--hover-color), transparent);
+                    transition: left 0.5s;
+                }
+
+                .sb-sidenav .nav-link:hover::before {
+                    left: 100%;
+                }
+
+                .sb-sidenav .nav-link:hover {
+                    background: linear-gradient(135deg, var(--accent-color) 0%, rgba(255, 171, 184, 0.8) 100%) !important;
+                    color: var(--primary-color) !important;
+                    transform: translateX(5px);
+                    box-shadow: 0 4px 15px rgba(255, 171, 184, 0.3);
+                }
+
+                    .sb-sidenav .nav-link:hover .sb-nav-link-icon {
+                        color: var(--primary-color) !important;
+                        transform: scale(1.2) rotate(5deg);
+                    }
+
+        .sb-nav-link-icon {
+            margin-right: 0.75rem;
+            transition: all 0.3s ease;
+            color: var(--accent-color) !important;
+        }
+
+        /* Special styling for "Back To Home Page" link */
+        .sb-sidenav .nav-link[style*="background-color:white"] {
+            background: linear-gradient(135deg, var(--white) 0%, #f8f9fa 100%) !important;
+            color: var(--primary-color) !important;
+            border: 2px solid var(--accent-color);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 171, 184, 0.2);
+        }
+
+            .sb-sidenav .nav-link[style*="background-color:white"]:hover {
+                background: linear-gradient(135deg, var(--accent-color) 0%, rgba(255, 171, 184, 0.9) 100%) !important;
+                transform: translateX(8px) scale(1.02);
+                box-shadow: 0 6px 20px rgba(255, 171, 184, 0.4);
+            }
+
+        /* Sidebar Footer */
+        .sb-sidenav-footer {
+            background: linear-gradient(135deg, #2c2e30 0%, var(--primary-color) 100%) !important;
+            border-top: 2px solid var(--accent-color);
+            color: var(--white) !important;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+            .sb-sidenav-footer .small {
+                color: var(--accent-color) !important;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        /* Main Content Area */
+        #layoutSidenav_content {
+            background: linear-gradient(135deg, var(--light-gray) 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            padding: 2rem !important;
+        }
+
+        #header {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+            #header::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 4px;
+                background: linear-gradient(90deg, var(--accent-color) 0%, rgba(255, 171, 184, 0.5) 100%);
+                border-radius: 2px;
+            }
+
+        hr {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, var(--accent-color) 50%, transparent 100%);
+            margin: 2rem 0;
+        }
+
+        /* Card Styling */
+        #allCards {
+            background: var(--white);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(65, 67, 69, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+            #allCards::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--accent-color) 0%, rgba(255, 171, 184, 0.7) 50%, var(--accent-color) 100%);
+            }
+
+        .card-body {
+            padding: 2.5rem;
+            background: linear-gradient(135deg, var(--white) 0%, #fafbfc 100%);
+        }
+
+        /* Image Styling */
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(65, 67, 69, 0.15);
+            transition: all 0.3s ease;
+            border: 3px solid var(--border-color);
+        }
+
+            img:hover {
+                transform: scale(1.02);
+                box-shadow: 0 12px 35px rgba(255, 171, 184, 0.3);
+                border-color: var(--accent-color);
+            }
+
+        /* Footer Styling */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #525557 100%) !important;
+            color: var(--white) !important;
+            border-top: 3px solid var(--accent-color);
+            margin-top: 3rem;
+        }
+
+            footer .text-muted {
+                color: #e0e0e0 !important;
+            }
+
+            footer a {
+                color: var(--accent-color) !important;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+                footer a:hover {
+                    color: var(--white) !important;
+                    text-shadow: 0 0 8px var(--accent-color);
+                }
+
+       
+        .container-fluid {
+            padding: 1rem !important;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        }
+
+      
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        #allCards {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Hover Effects for Interactive Elements */
+        .nav-link, .btn, a {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 25% 25%, rgba(255, 171, 184, 0.05) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(65, 67, 69, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
 
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand ps-3" href="index.html">Sweety Cakes</a>
+        <a class="navbar-brand ps-3" href="@Url.Action("Index", "Home")">Sweety Cakes</a>
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-       
-      
     </nav>
 
     <div style="">
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
+                    <div class="nav">
+                        <a class="nav-link" href="@Url.Action("Index", "Home")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                            Dashboard
+                        </a>
 
-                            <a class="nav-link" href="@Url.Action("Index", "Home")">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Dashboard
-                            </a>
-                            
-                            <a class="nav-link" href="@Url.Action("Index", "Order")">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                All Order 
-                            </a>
-                            <a class="nav-link" href="@Url.Action("Index", "Categ")">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Manage Category
-                            </a>
-                            <a class="nav-link" href="@Url.Action("Index", "Prod")">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Manage Products
-                            </a>
-                            <a class="nav-link" href="http://localhost:4200/Home" style="background-color:white; color:black">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Back To Home Page
-                            </a>
-                        </div>
+                        <a class="nav-link" href="@Url.Action("Index", "Order")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-shopping-cart"></i></div>
+                            All Orders
+                        </a>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Categ")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                            Manage Category
+                        </a>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Prod")">
+                            <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                            Manage Products
+                        </a>
+
+                        <a class="nav-link" href="@Url.Action("Index", "Home")" style="background-color:white; color:black">
+                            <div class="sb-nav-link-icon"><i class="fas fa-arrow-left"></i></div>
+                            Back To Home Page
+                        </a>
                     </div>
-                    <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Admin
-                    </div>
+
                 </nav>
             </div>
             <div id="layoutSidenav_content">
@@ -77,17 +355,22 @@
                                 <main role="main" class="pb-3" style="width: 100%;">
                                     @RenderBody()
                                 </main>
-                                @* This page is an example of using the light side navigation option. By appending the
-                                <code>.sb-sidenav-light</code>
-                                class to the
-                                <code>.sb-sidenav</code>
-                                class, the side navigation will take on a light color scheme. The
-                                <code>.sb-sidenav-dark</code>
-                                is also available for a darker option. *@
                             </div>
                         </div>
                     </div>
                 </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2022</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </div>
     </div>
