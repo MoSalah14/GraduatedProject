@@ -90,7 +90,7 @@ namespace SweetyCake.Extensions
                                 // Cookie For Mvc Authrization
                             }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                             {
-                                options.LoginPath = "/Account/Login";
+                                options.LoginPath = "/Account/Login"; 
                             })
                             // FaceBook Auth
                             .AddFacebook(options =>
