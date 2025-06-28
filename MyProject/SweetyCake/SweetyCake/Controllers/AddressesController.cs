@@ -21,22 +21,12 @@ namespace OutbornE_commerce.Controllers
             _addressRepository = addressRepository;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllAddresses()
         {
-            var addresses = await _addressRepository.FindAllAsync(null);
+            var UserID = User.GetUserIdFromToken();
+            var addresses = await _addressRepository.FindByCondition(us => us.UserId == UserID);
             var addressEntities = addresses.Adapt<List<AddressDto>>();
-
-            //var response = new Response<List<AddressDto>>
-            //{
-            //    Data = addressEntities,
-            //    IsError = false,
-            //    Message = "",
-            //    MessageAr = "",
-            //    Status = 200
-            //};
-            //return Ok(response);
             return Ok(new Response<List<AddressDto>>
             {
                 Data = addressEntities,

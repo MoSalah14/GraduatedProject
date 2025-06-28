@@ -316,6 +316,14 @@ namespace OutbornE_commerce.Controllers
                 if (user == null)
                     return NotFound(new { error = "User not found." });
 
+                if (session.Metadata.TryGetValue("OrderId", out var orderId) || string.IsNullOrWhiteSpace(orderId))
+                {
+                    var order = await orderRepository.Find(e => e.Id == Guid.Parse(orderId));
+                    if (order != null)
+                        order.OrderStatus = OrderStatus.Confirmed;
+                }
+
+                
 
                 await _BagItemsRepo.ClearCartAsync(userId, cancellationToken);
 
